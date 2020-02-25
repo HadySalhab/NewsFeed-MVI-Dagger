@@ -1,7 +1,8 @@
-package com.android.myapplication.newsfeed
+package com.android.myapplication.newsfeed.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.android.myapplication.newsfeed.R
 
 class MainActivity : AppCompatActivity() {
 
