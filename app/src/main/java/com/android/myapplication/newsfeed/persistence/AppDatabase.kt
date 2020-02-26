@@ -2,7 +2,6 @@ package com.android.myapplication.newsfeed.persistence
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.android.myapplication.newsfeed.models.Article
 
