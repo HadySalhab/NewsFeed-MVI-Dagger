@@ -6,5 +6,5 @@
     <fragment
         android:id="@+id/headlineFragment"
         android:name="com.android.myapplication.newsfeed.ui.headlines.HeadlineFragment"
-        android:label="HeadlineFragment" />
+        android:label="@string/headlines_label" />
 </navigation>

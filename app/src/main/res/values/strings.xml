@@ -3,4 +3,8 @@
     <string name="action_headlines">Headlines</string>
     <string name="action_sources">Sources</string>
     <string name="action_favorites">Favorites</string>
+    <string name="favorites_label">Favorites</string>
+    <string name="headlines_label">Headlines</string>
+    <string name="sources_label">Sources</string>
+    <string name="articles_source_label">News</string>
 </resources>

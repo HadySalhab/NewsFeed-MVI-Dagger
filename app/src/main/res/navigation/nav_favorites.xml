@@ -6,5 +6,5 @@
     <fragment
         android:id="@+id/favoritesFragment"
         android:name="com.android.myapplication.newsfeed.ui.favorites.FavoritesFragment"
-        android:label="FavoritesFragment" />
+        android:label="@string/favorites_label" />
 </navigation>
