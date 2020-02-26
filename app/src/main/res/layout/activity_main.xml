@@ -29,6 +29,7 @@
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         >
 
+<!--We will handle the navigation manually-->
     <FrameLayout
         android:id="@+id/main_nav_host_fragment"
         android:layout_width="match_parent"

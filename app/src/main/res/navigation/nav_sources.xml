@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_sources"
+    app:startDestination="@id/sourcesFragment">
+
+    <fragment
+        android:id="@+id/sourcesFragment"
+        android:name="com.android.myapplication.newsfeed.ui.sources.SourcesFragment"
+        android:label="SourcesFragment" >
+        <action
+            android:id="@+id/action_sourcesFragment_to_articlesSourceFragment2"
+            app:destination="@id/articlesSourceFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/articlesSourceFragment"
+        android:name="com.android.myapplication.newsfeed.ui.sources.ArticlesSourceFragment"
+        android:label="ArticlesSourceFragment" >
+        <action
+            android:id="@+id/action_articlesSourceFragment_to_sourcesFragment"
+            app:destination="@id/sourcesFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out"
+            app:popUpTo="@id/sourcesFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+</navigation>
