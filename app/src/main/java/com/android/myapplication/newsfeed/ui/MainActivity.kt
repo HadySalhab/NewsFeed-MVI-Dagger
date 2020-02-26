@@ -10,11 +10,13 @@ import com.android.myapplication.newsfeed.ui.headlines.HeadlineFragment
 import com.android.myapplication.newsfeed.ui.sources.ArticlesSourceFragment
 import com.android.myapplication.newsfeed.util.BottomNavController
 import com.android.myapplication.newsfeed.util.setUpNavigation
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : DaggerAppCompatActivity(),
+    DataStateChangeListener,
     BottomNavController.NavGraphProvider,
     BottomNavController.OnNavigationGraphChanged,
     BottomNavController.OnNavigationReselectedListener {
@@ -74,7 +76,7 @@ class MainActivity : DaggerAppCompatActivity(),
 
 
     override fun onGraphChange() {
-        //what needs to happen when the graph changes?
+        expandAppBar()
     }
 
     override fun onReselectNavItem(navController: NavController, fragment: Fragment) = when(fragment){
@@ -84,5 +86,9 @@ class MainActivity : DaggerAppCompatActivity(),
         else->{
             //Nothing need to be done here
         }
+    }
+
+    override fun expandAppBar() {
+        findViewById<AppBarLayout>(R.id.appbar_layout).setExpanded(true)
     }
 }
