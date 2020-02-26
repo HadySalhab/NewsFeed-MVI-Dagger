@@ -8,5 +8,5 @@ import com.android.myapplication.newsfeed.models.Article
 @Dao
 interface ArticlesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(article: Article): Long
+    suspend fun insert(article: Article): Long //denotes the row # that was inserted in the db
 }
