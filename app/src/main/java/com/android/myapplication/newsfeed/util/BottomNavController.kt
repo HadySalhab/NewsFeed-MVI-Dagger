@@ -13,6 +13,11 @@ import androidx.navigation.fragment.NavHostFragment
 import com.android.myapplication.newsfeed.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
+/*
+*
+* reference https://github.com/mitchtabian/Open-API-Android-App/blob/Custom-Bottom-Nav-Controller/app/src/main/java/com/codingwithmitch/openapi/util/BottomNavController.kt
+* */
+
 class BottomNavController(
     val context: Context,
     @IdRes val containerId: Int,
