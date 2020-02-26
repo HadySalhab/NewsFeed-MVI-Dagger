@@ -8,7 +8,7 @@
         android:name="com.android.myapplication.newsfeed.ui.sources.SourcesFragment"
         android:label="SourcesFragment" >
         <action
-            android:id="@+id/action_sourcesFragment_to_articlesSourceFragment2"
+            android:id="@+id/action_sourcesFragment_to_articlesSourceFragment"
             app:destination="@id/articlesSourceFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
