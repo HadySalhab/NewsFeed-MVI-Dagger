@@ -7,6 +7,6 @@ class HeadlinesRepository
 @Inject
 constructor(
     val newsApi: NewsApi
-) {
+): JobManager("HeadlinesRepository") {
     private val TAG:String = "AppDebug"
 }
