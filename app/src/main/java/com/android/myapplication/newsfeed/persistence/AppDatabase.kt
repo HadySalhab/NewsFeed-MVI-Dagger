@@ -6,7 +6,7 @@ import androidx.room.TypeConverters
 import com.android.myapplication.newsfeed.models.Article
 
 @TypeConverters(Converter::class)
-@Database(entities = [Article::class],version = 1,exportSchema = false)
+@Database(entities = [ArticleDb::class],version = 1,exportSchema = false)
 abstract class AppDatabase :RoomDatabase() {
     abstract fun getArticlesDao():ArticlesDao
     companion object{
