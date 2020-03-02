@@ -6,7 +6,7 @@
     <dimen name="medium_margin">8dp</dimen>
     <dimen name="small_margin">4dp</dimen>
     <dimen name="thumbnail_image_width">140dp</dimen>
-    <dimen name="thumbnail_image_height">120dp</dimen>
+    <dimen name="thumbnail_image_height">180dp</dimen>
     <dimen name="medium_padding">8dp</dimen>
     <dimen name="small_padding">4dp</dimen>
 </resources>
