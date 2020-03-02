@@ -19,5 +19,5 @@ data class ArticleNetwork(
     @SerializedName("content")
     var content:String?=null,
     @SerializedName("source")
-    var source: Source
+    var source: Source?=null
 )
