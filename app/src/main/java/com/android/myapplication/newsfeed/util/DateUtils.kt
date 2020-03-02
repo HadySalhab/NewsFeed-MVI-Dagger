@@ -5,12 +5,12 @@ import java.util.*
 
 class DateUtils {
 
-    companion object{
+    companion object {
 
         private val TAG: String = "AppDebug"
 
         // dates from server look like this: "2020-02-27T02:19:00Z"
-        fun convertServerStringDateToLong(sd: String): Long{
+        fun convertServerStringDateToLong(sd: String): Long {
             var stringDate = sd.removeRange(sd.indexOf("T") until sd.length)
             val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
             try {
@@ -21,7 +21,7 @@ class DateUtils {
             }
         }
 
-        fun convertLongToStringDate(longDate: Long): String{
+        fun convertLongToStringDate(longDate: Long): String {
             val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
             try {
                 val date = sdf.format(Date(longDate))
@@ -30,7 +30,11 @@ class DateUtils {
                 throw Exception(e)
             }
         }
+
+        fun formatDate(sd: String?): String? {
+          return sd?.let {
+                 sd.removeRange(sd.indexOf("T") until sd.length)
+            }?:""
+        }
     }
-
-
 }
