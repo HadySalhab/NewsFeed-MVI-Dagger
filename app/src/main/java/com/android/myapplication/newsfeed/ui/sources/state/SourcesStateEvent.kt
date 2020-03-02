@@ -1,5 +1,8 @@
-
+package com.android.myapplication.newsfeed.ui.sources.state
 sealed class SourcesStateEvent {
-    class SourcesSearchEvent():SourcesStateEvent()
-    class None:SourcesStateEvent()
+    data class SourcesSearchEvent(
+        var country:String = "",
+        var category:String = "general"
+    ): SourcesStateEvent()
+    class None: SourcesStateEvent()
 }
