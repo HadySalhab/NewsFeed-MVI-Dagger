@@ -3,8 +3,10 @@ package com.android.myapplication.newsfeed.di
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.Network
 import com.android.myapplication.newsfeed.R
 import com.android.myapplication.newsfeed.util.Constants
+import com.android.myapplication.newsfeed.util.NetworkUtil
 import com.android.myapplication.newsfeed.util.PreferenceKeys
 import com.android.myapplication.popularmovies.util.LiveDataCallAdapterFactory
 import com.bumptech.glide.Glide
@@ -51,17 +53,11 @@ class AppModule{
 
     @Singleton
     @Provides
-    fun provideGsonBuilder(): Gson {
-        return GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
-    }
-
-    @Singleton
-    @Provides
-    fun provideRetrofitBuilder(gsonBuilder: Gson): Retrofit.Builder{
+    fun provideRetrofitBuilder(): Retrofit.Builder{
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
             .addCallAdapterFactory(LiveDataCallAdapterFactory())
-            .addConverterFactory(GsonConverterFactory.create(gsonBuilder))
+            .addConverterFactory(GsonConverterFactory.create())
     }
 
 
