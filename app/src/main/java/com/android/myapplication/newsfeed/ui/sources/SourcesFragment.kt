@@ -15,7 +15,6 @@ class SourcesFragment : BaseSourcesFragment() {
     private var tabLayout: TabLayout? = null
     private var tabLayoutMediator:TabLayoutMediator?=null
     private var adapter:SourcesPagerAdapter?=null
-    private val TAG = "AppDebug"
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -31,6 +30,7 @@ class SourcesFragment : BaseSourcesFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "SourcesFragment: onViewCreated: ${viewModel} ")
     }
 
     private fun initViewPager() {
