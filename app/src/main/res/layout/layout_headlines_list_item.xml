@@ -28,7 +28,7 @@
                 android:padding="@dimen/medium_padding"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/grey2"
+                android:background="@color/grey1"
                 android:textAppearance="?android:textAppearanceLarge"
                 android:textStyle="bold"
                 tools:text="Netanyahu is fighting for power like his freedom depends on it -- and it might - CNN" />
@@ -46,6 +46,7 @@
                     android:layout_toStartOf="@id/iv_article_image"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
+                    android:paddingStart="@dimen/small_padding"
                     tools:text="Nearly everything about the last year in Israeli politics has been unprecedented. A second election. A third election. A sitting Prime Minister indicted. That same Prime Minister standing next to the US President and talking about imminent annexation of Pales…"
                     />
 
@@ -62,6 +63,7 @@
                 tools:text="Cody Wilcox"
                 android:textColor="@color/secondary_color"
                 android:layout_height="wrap_content"
+                android:paddingStart="@dimen/small_padding"
                 android:layout_width="wrap_content" />
 
             <RelativeLayout
@@ -76,6 +78,7 @@
                     android:layout_alignBottom="@id/iv_favorite_image"
                     android:layout_toStartOf="@+id/iv_favorite_image"
                     tools:text="2020-03-01"
+                    android:paddingStart="@dimen/small_padding"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content" />
                 <ImageView
