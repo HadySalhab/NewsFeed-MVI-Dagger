@@ -13,5 +13,5 @@ interface ArticlesDao {
     suspend fun insert(articleDb: ArticleDb): Long //denotes the row # that was inserted in the db
 
     @Query("SELECT * FROM article")
-    fun getAllArticles():List<ArticleDb>
+    fun getAllArticles():List<ArticleDb>?
 }
