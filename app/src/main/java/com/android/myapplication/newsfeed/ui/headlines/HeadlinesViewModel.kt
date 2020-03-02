@@ -57,6 +57,14 @@ constructor(
         update.headlinesFields.searchQuery = query
         _viewState.value = update
     }
+    fun setErrorScreenMsg(errorScreenMsg:String){
+        val update = getCurrentViewStateOrNew()
+        if (errorScreenMsg.equals(update.headlinesFields.errorScreenMsg)) {
+            return
+        }
+        update.headlinesFields.errorScreenMsg = errorScreenMsg
+        _viewState.value = update
+    }
 
     fun setHeadlineListData(headlinesList: List<Article>) {
         val update = getCurrentViewStateOrNew()

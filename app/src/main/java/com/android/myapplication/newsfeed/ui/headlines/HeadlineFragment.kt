@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +16,7 @@ import com.android.myapplication.newsfeed.models.Article
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesStateEvent
 import com.bumptech.glide.RequestManager
 import kotlinx.android.synthetic.main.fragment_headlines.*
+import kotlinx.android.synthetic.main.fragment_headlines.view.*
 import javax.inject.Inject
 
 class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interaction {
@@ -23,7 +25,9 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
     lateinit var requestManager: RequestManager
 
     private lateinit var headlinesAdapter: HeadlinesListAdapter
-    private lateinit var rv: RecyclerView
+    private  var recyclerView : RecyclerView?=null
+    private  var tv_error:TextView?=null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -31,7 +35,8 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         val view = inflater.inflate(R.layout.fragment_headlines, container, false)
-        rv = view.findViewById(R.id.rv_headlines)
+        recyclerView = view.findViewById(R.id.rv_headlines)
+        tv_error = view.findViewById(R.id.tv_error)
         initRV()
         return view
     }
@@ -54,7 +59,9 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
         // NOTE: even though the DataState member variables are wrapped in event,
         // it will be refreshed because its event object are being updated, in the networkBoundResources and repositories every time we fire this request
         viewModel.executeQueryEvent.observe(viewLifecycleOwner, Observer { queryEvent->
+
                 queryEvent.getContentIfNotHandled()?.let { //only proceed if this query has never been handled
+                    Log.d(TAG, "HeadlineFragment: executeQueryEvent: $queryEvent")
                     viewModel.setStateEvent(HeadlinesStateEvent.HeadlinesSearchEvent())
                 }
             })
@@ -65,35 +72,54 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
     private fun subscribeObservers() {
         viewModel.dataState.observe(viewLifecycleOwner, Observer { dataState ->
             dataState?.let {
-                stateChangeListener.onDataStateChange(dataState) //let the listener invoke their onDataStateChange impl (error, loading ,data response)
+                stateChangeListener?.onDataStateChange(dataState) //let the listener invoke their onDataStateChange impl (error, loading ,data response)
                 //this component handle the data data
                 dataState.data?.let {
                     it.data?.let { event ->
                         event.getContentIfNotHandled()?.let { viewState ->
-                            Log.d(TAG, "HeadlineFragment: viewState: $viewState")
+                            Log.d(TAG, "HeadlineFragment: dataStateReturned: with data!=null, updating headlinesList")
                             //we are updating a field in the viewState, which will update the viewState itself
                             // and fire observers
                             viewModel.setHeadlineListData(viewState.headlinesFields.headlinesList)
                         }
                     }
                 }
+
+                it.error?.let { errorEvent ->
+                    //handle the error if not null
+                    //if the errorEvent hasNotBeenHandled, update the view state to update the ui, otherwise do nothing
+                    errorEvent.getContentIfNotHandled()?.let{ stateError->
+                        Log.d(TAG, "HeadlineFragment: dataStateReturned: with error!=null, updating errorMsgScreen")
+                        viewModel.setErrorScreenMsg(stateError.response.message?:"")
+                    }
+                }
             }
         })
+
         //As soon as the HeadlineFrag is created , it will receive the viewState (if available) in the ViewModel
-        // and everTime the viewState is changed
+        // and everTime the viewState is changed , we update the ui
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
-            Log.d(TAG, "HeadlineFragment: viewState: $viewState")
+            Log.d(TAG, "HeadlineFragment: viewState observer: ${viewState}")
             viewState?.let {
                 headlinesAdapter.submitList(
-                    list = it.headlinesFields.headlinesList,
+                    list = it.headlinesFields.headlinesList, //could be empty or not
                     isQueryExhausted = true
                 )
+
+                //only show error screen if the list is empty
+                //because if the user retrieved the list successfully, turns the wifi off and then pull to refresh, we dont want to show the error screen on top of the list
+                if(it.headlinesFields.headlinesList.isNullOrEmpty()){
+                    tv_error!!.visibility = View.VISIBLE
+                    tv_error!!.text = it.headlinesFields.errorScreenMsg
+                }else{
+                    tv_error!!.visibility = View.GONE
+                }
             }
         })
     }
 
     private fun initRV() {
-        rv.apply {
+        recyclerView!!.apply {
             layoutManager = LinearLayoutManager(this@HeadlineFragment.context)
             headlinesAdapter = HeadlinesListAdapter(this@HeadlineFragment, requestManager)
 
@@ -113,7 +139,8 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
 
     override fun onDestroyView() {
         super.onDestroyView()
-        rv_headlines.adapter = null //to avoid memory leak
+        recyclerView!!.adapter = null //to avoid memory leak
+        tv_error = null
     }
 
     override fun onItemSelected(position: Int, item: Article) {

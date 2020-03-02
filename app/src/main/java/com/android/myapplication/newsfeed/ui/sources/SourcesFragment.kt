@@ -1,26 +1,28 @@
 package com.android.myapplication.newsfeed.ui.sources
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.android.myapplication.newsfeed.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.android.synthetic.main.fragment_sources.*
 
-class SourcesFragment : BaseSourcesFragment (){
-    private lateinit var viewPager:ViewPager2
-    private lateinit var tabLayout: TabLayout
+class SourcesFragment : BaseSourcesFragment() {
+    private var viewPager: ViewPager2? = null
+    private var tabLayout: TabLayout? = null
+    private var tabLayoutMediator:TabLayoutMediator?=null
+    private var adapter:SourcesPagerAdapter?=null
+    private val TAG = "AppDebug"
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        val view = inflater.inflate(R.layout.fragment_sources,container,false)
+        val view = inflater.inflate(R.layout.fragment_sources, container, false)
         viewPager = view.findViewById(R.id.viewpager)
         tabLayout = view.findViewById(R.id.tabs)
         initViewPager()
@@ -31,24 +33,26 @@ class SourcesFragment : BaseSourcesFragment (){
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun initViewPager(){
-        viewPager.adapter = SourcesPagerAdapter(this)
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+    private fun initViewPager() {
+        adapter = SourcesPagerAdapter(this)
+        viewPager!!.adapter = adapter
+        tabLayoutMediator = TabLayoutMediator(tabLayout!!, viewPager!!) { tab, position ->
             tab.text = getTabTitle(position)
-        }.attach()
-    }
- /*   private fun getTabIcon(position: Int): Int {
-        return when (position) {
-            GENERAL_SOURCE_PAGE_INDEX -> R.drawable.garden_tab_selector
-            BUSINESS_SOURCE_PAGE_INDEX -> R.drawable.plant_list_tab_selector
-            ENTERTAINMENT_SOURCE_PAGE_INDEX -> R.drawable.garden_tab_selector
-            HEALTH_SOURCE_PAGE_INDEX -> R.drawable.plant_list_tab_selector
-            SCIENCE_SOURCE_PAGE_INDEX -> R.drawable.garden_tab_selector
-            SPORTS_SOURCE_PAGE_INDEX -> R.drawable.plant_list_tab_selector
-            TECHNOLOGY_SOURCE_PAGE_INDEX -> R.drawable.garden_tab_selector
-            else -> throw IndexOutOfBoundsException()
         }
-    }*/
+        (tabLayoutMediator)!!.attach()
+    }
+    /*   private fun getTabIcon(position: Int): Int {
+           return when (position) {
+               GENERAL_SOURCE_PAGE_INDEX -> R.drawable.garden_tab_selector
+               BUSINESS_SOURCE_PAGE_INDEX -> R.drawable.plant_list_tab_selector
+               ENTERTAINMENT_SOURCE_PAGE_INDEX -> R.drawable.garden_tab_selector
+               HEALTH_SOURCE_PAGE_INDEX -> R.drawable.plant_list_tab_selector
+               SCIENCE_SOURCE_PAGE_INDEX -> R.drawable.garden_tab_selector
+               SPORTS_SOURCE_PAGE_INDEX -> R.drawable.plant_list_tab_selector
+               TECHNOLOGY_SOURCE_PAGE_INDEX -> R.drawable.garden_tab_selector
+               else -> throw IndexOutOfBoundsException()
+           }
+       }*/
 
     private fun getTabTitle(position: Int): String? {
         return when (position) {
@@ -61,5 +65,20 @@ class SourcesFragment : BaseSourcesFragment (){
             TECHNOLOGY_SOURCE_PAGE_INDEX -> getString(R.string.tab_technology)
             else -> null
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        adapter = null
+        viewPager!!.adapter = null
+        viewPager = null
+        tabLayout = null
+        tabLayoutMediator!!.detach()
+        tabLayoutMediator = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "SourceFragment:OnDestroy ")
     }
 }

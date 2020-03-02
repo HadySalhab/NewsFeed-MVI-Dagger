@@ -20,4 +20,5 @@
     <string name="tab_science">Science</string>
     <string name="tab_sports">Sports</string>
     <string name="tab_technology">Technology</string>
+    <string name="check_network">Check network connection</string>
 </resources>

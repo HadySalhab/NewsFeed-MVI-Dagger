@@ -6,6 +6,7 @@ class ErrorHandling {
         const val UNABLE_TO_RESOLVE_HOST = "Unable to resolve host"
         const val ERROR_UNKNOWN = "Unknown error"
         const val ERROR_CHECK_NETWORK_CONNECTION = "Check network connection."
+        const val ERROR_EMPTY_RESPONSE = "HTTP 204. Returned NOTHING."
 
         fun isNetworkError(msg: String): Boolean{
             when{

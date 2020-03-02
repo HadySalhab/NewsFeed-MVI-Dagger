@@ -28,6 +28,7 @@ abstract class BaseViewModel<StateEvent, ViewState> : ViewModel()
         _stateEvent.value = event
     }
 
+    //create newView state or get the existing one
     fun getCurrentViewStateOrNew(): ViewState{
         val value = viewState.value?.let{
             it

@@ -1,6 +1,5 @@
 package com.android.myapplication.newsfeed.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -9,16 +8,12 @@ import androidx.navigation.NavController
 import com.android.myapplication.newsfeed.R
 import com.android.myapplication.newsfeed.ui.favorites.BaseFavoritesFragment
 import com.android.myapplication.newsfeed.ui.headlines.BaseHeadlineFragment
-import com.android.myapplication.newsfeed.ui.headlines.BaseHeadlineFragment_MembersInjector
-import com.android.myapplication.newsfeed.ui.headlines.HeadlineFragment
 import com.android.myapplication.newsfeed.ui.sources.ArticlesSourceFragment
 import com.android.myapplication.newsfeed.ui.sources.BaseSourcesFragment
-import com.android.myapplication.newsfeed.ui.sources.BaseSourcesFragment_MembersInjector
 import com.android.myapplication.newsfeed.util.BottomNavController
 import com.android.myapplication.newsfeed.util.setUpNavigation
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity(),
