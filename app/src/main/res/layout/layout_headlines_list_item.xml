@@ -65,6 +65,13 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/small_padding"
                 android:layout_width="wrap_content" />
+            <TextView
+                android:id="@+id/tv_article_source_name"
+                tools:text="The Washington Post"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/small_padding"
+                android:layout_marginBottom="@dimen/small_margin"
+                android:layout_width="wrap_content" />
 
             <RelativeLayout
                 android:layout_width="wrap_content"
