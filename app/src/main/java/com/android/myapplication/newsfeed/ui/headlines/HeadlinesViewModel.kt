@@ -30,7 +30,10 @@ constructor(
     override fun handleStateEvent(stateEvent: HeadlinesStateEvent): LiveData<DataState<HeadlinesViewState>> {
         when(stateEvent){
             is HeadlinesStateEvent.HeadlinesSearchEvent->{
-                return AbsentLiveData.create()
+                return headlinesRepository.getTopHeadlines(
+                   stateEvent.country,
+                    stateEvent.category
+                )
             }
             is HeadlinesStateEvent.None->{
                 return AbsentLiveData.create()
@@ -52,6 +55,7 @@ constructor(
         update.headlinesFields.headlinesList = headlinesList
         _viewState.value = update
     }
+
      fun cancelActiveJobs(){
         headlinesRepository.cancelActiveJobs() //repository extends JobManager, cancelActiveJobs is part of the job Manager
         handlePendingData()
