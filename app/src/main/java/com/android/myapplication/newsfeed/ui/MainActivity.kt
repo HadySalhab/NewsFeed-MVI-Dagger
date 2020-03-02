@@ -3,11 +3,17 @@ package com.android.myapplication.newsfeed.ui
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import com.android.myapplication.newsfeed.R
+import com.android.myapplication.newsfeed.ui.favorites.BaseFavoritesFragment
+import com.android.myapplication.newsfeed.ui.headlines.BaseHeadlineFragment
+import com.android.myapplication.newsfeed.ui.headlines.BaseHeadlineFragment_MembersInjector
 import com.android.myapplication.newsfeed.ui.headlines.HeadlineFragment
 import com.android.myapplication.newsfeed.ui.sources.ArticlesSourceFragment
+import com.android.myapplication.newsfeed.ui.sources.BaseSourcesFragment
+import com.android.myapplication.newsfeed.ui.sources.BaseSourcesFragment_MembersInjector
 import com.android.myapplication.newsfeed.util.BottomNavController
 import com.android.myapplication.newsfeed.util.setUpNavigation
 import com.google.android.material.appbar.AppBarLayout
@@ -15,8 +21,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : DaggerAppCompatActivity(),
-    DataStateChangeListener,
+class MainActivity : BaseActivity(),
     BottomNavController.NavGraphProvider,
     BottomNavController.OnNavigationGraphChanged,
     BottomNavController.OnNavigationReselectedListener {
@@ -62,6 +67,15 @@ class MainActivity : DaggerAppCompatActivity(),
         setSupportActionBar(toolbar)
     }
 
+    override fun displayProgressBar(bool: Boolean) {
+        if(bool){
+            progress_bar.visibility = View.VISIBLE
+        }
+        else{
+            progress_bar.visibility = View.GONE
+        }
+    }
+
     override fun onBackPressed() = bottomNavController.onBackPressed()
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -76,7 +90,32 @@ class MainActivity : DaggerAppCompatActivity(),
 
 
     override fun onGraphChange() {
+        cancelActiveJobs()
         expandAppBar()
+    }
+
+
+    //cancel ActivityJobs should Be cancelled when we change the navGraph or
+    // when we change a fragment within the same graph(this is handled in onViewCreated of each fragment)
+    private fun cancelActiveJobs(){
+        val fragments = bottomNavController.fragmentManager
+            .findFragmentById(bottomNavController.containerId)
+            ?.childFragmentManager
+            ?.fragments
+        if(fragments != null){
+            for(fragment in fragments){
+                if(fragment is BaseHeadlineFragment){
+                    fragment.cancelActiveJobs()
+                }
+                if(fragment is BaseSourcesFragment){
+                    fragment.cancelActiveJobs()
+                }
+                if(fragment is BaseFavoritesFragment){
+                    fragment.cancelActiveJobs()
+                }
+            }
+        }
+        displayProgressBar(false)
     }
 
     override fun onReselectNavItem(navController: NavController, fragment: Fragment) = when(fragment){
