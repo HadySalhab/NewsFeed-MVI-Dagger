@@ -8,6 +8,7 @@ import com.android.myapplication.newsfeed.persistence.ArticlesDao
 import com.android.myapplication.newsfeed.repository.FavoritesRepository
 import com.android.myapplication.newsfeed.repository.HeadlinesRepository
 import com.android.myapplication.newsfeed.repository.SourceRepository
+import com.android.myapplication.newsfeed.util.NetworkUtil
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -26,7 +27,7 @@ class MainModule {
 
 
 
-    @Singleton
+    @MainScope
     @Provides
     fun provideAppDb(app: Application): AppDatabase {
         return Room
@@ -35,7 +36,7 @@ class MainModule {
             .build()
     }
 
-    @Singleton
+    @MainScope
     @Provides
     fun provideArticlesDao(db: AppDatabase): ArticlesDao {
         return db.getArticlesDao()
@@ -44,8 +45,8 @@ class MainModule {
 
     @MainScope
     @Provides
-    fun provideHeadlinesRepository(newsApi: NewsApi): HeadlinesRepository {
-        return HeadlinesRepository(newsApi = newsApi)
+    fun provideHeadlinesRepository(newsApi: NewsApi,articlesDao: ArticlesDao,networkUtil: NetworkUtil): HeadlinesRepository {
+        return HeadlinesRepository(newsApi = newsApi,articlesDao = articlesDao,networkUtil = networkUtil)
     }
 
     @MainScope
