@@ -34,6 +34,7 @@ abstract class BaseHeadlineFragment : DaggerFragment (){
 
         //run, because we want implicit reference to the activity, to ensure one store owner,
         // that way the same viewModel instance is going to be injected
+        //the viewModel life is wired to its owner, in this case the MainActivity
         viewModel = activity?.run {
             ViewModelProvider(this,providerFactory).get(HeadlinesViewModel::class.java)
         }?:throw Exception ("Invalid Activity")
