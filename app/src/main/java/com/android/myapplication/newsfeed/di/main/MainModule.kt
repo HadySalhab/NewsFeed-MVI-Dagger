@@ -43,23 +43,23 @@ class MainModule {
     }
 
 
-    @MainScope
-    @Provides
-    fun provideHeadlinesRepository(newsApi: NewsApi,articlesDao: ArticlesDao,networkUtil: NetworkUtil): HeadlinesRepository {
-        return HeadlinesRepository(newsApi = newsApi,articlesDao = articlesDao,networkUtil = networkUtil)
-    }
+//    @MainScope
+//    @Provides
+//    fun provideHeadlinesRepository(newsApi: NewsApi,articlesDao: ArticlesDao,networkUtil: NetworkUtil): HeadlinesRepository {
+//        return HeadlinesRepository(newsApi = newsApi,articlesDao = articlesDao,networkUtil = networkUtil)
+//    }
 
-    @MainScope
-    @Provides
-    fun provideSourceRepository(newsApi: NewsApi): SourceRepository {
-        return SourceRepository(newsApi = newsApi)
-    }
+//    @MainScope
+//    @Provides
+//    fun provideSourceRepository(newsApi: NewsApi,networkUtil: NetworkUtil): SourceRepository {
+//        return SourceRepository(newsApi = newsApi,networkUtil = networkUtil)
+//    }
 
-    @MainScope
-    @Provides
-    fun provideFavoritesRepository(newsApi: NewsApi,articlesDao: ArticlesDao): FavoritesRepository {
-        return FavoritesRepository(newsApi = newsApi,articlesDao = articlesDao)
-    }
+//    @MainScope
+//    @Provides
+//    fun provideFavoritesRepository(newsApi: NewsApi,articlesDao: ArticlesDao): FavoritesRepository {
+//        return FavoritesRepository(newsApi = newsApi,articlesDao = articlesDao)
+//    }
 
 
 }

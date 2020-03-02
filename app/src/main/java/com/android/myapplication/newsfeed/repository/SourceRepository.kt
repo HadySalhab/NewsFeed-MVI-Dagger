@@ -6,6 +6,7 @@ import com.android.myapplication.newsfeed.api.NewsApi
 import com.android.myapplication.newsfeed.api.data.ArticleNetwork
 import com.android.myapplication.newsfeed.api.data.SourceNetwork
 import com.android.myapplication.newsfeed.api.responses.SourcesResponse
+import com.android.myapplication.newsfeed.di.main.MainScope
 import com.android.myapplication.newsfeed.models.Article
 import com.android.myapplication.newsfeed.models.Source
 import com.android.myapplication.newsfeed.persistence.ArticleDb
@@ -18,8 +19,11 @@ import com.android.myapplication.newsfeed.util.NetworkUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
+@MainScope
 class SourceRepository
+@Inject
 constructor(
     val newsApi: NewsApi,
     val networkUtil: NetworkUtil

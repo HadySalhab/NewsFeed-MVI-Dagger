@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import com.android.myapplication.newsfeed.api.NewsApi
 import com.android.myapplication.newsfeed.api.data.ArticleNetwork
 import com.android.myapplication.newsfeed.api.responses.HeadlinesResponse
+import com.android.myapplication.newsfeed.di.main.MainScope
 import com.android.myapplication.newsfeed.models.Article
 import com.android.myapplication.newsfeed.persistence.ArticleDb
 import com.android.myapplication.newsfeed.persistence.ArticlesDao
@@ -17,9 +18,9 @@ import com.android.myapplication.newsfeed.util.NetworkUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
-import okhttp3.Dispatcher
 import javax.inject.Inject
 
+@MainScope
 class HeadlinesRepository
 @Inject
 constructor(
