@@ -1,13 +1,8 @@
 package com.android.myapplication.newsfeed.ui
 
 import android.content.Context
-import android.provider.ContactsContract
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
-import com.android.myapplication.newsfeed.ui.sources.Event
-import com.android.myapplication.newsfeed.ui.sources.Response
-import com.android.myapplication.newsfeed.ui.sources.ResponseType
-import com.android.myapplication.newsfeed.ui.sources.StateError
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

@@ -1,4 +1,4 @@
-package com.android.myapplication.newsfeed.ui.sources
+package com.android.myapplication.newsfeed.ui
 
 
 data class Loading(val isLoading: Boolean)
@@ -26,7 +26,7 @@ open class Event<out T>(private val content: T) {
         private set // Allow external read but not write
 
     /**
-     * Returns the content and prevents its use again.
+     * Returns the content and prevents its use again,WITHIN THE SAME OBJECT.
      */
     fun getContentIfNotHandled(): T? {
         return if (hasBeenHandled) {

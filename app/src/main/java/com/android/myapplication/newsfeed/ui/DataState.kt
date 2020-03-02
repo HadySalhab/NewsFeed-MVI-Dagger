@@ -1,10 +1,10 @@
 package com.android.myapplication.newsfeed.ui
 
-import com.android.myapplication.newsfeed.ui.sources.*
-
 data class DataState<T>(
  var error: Event<StateError>? = null,
- var loading: Loading = Loading(false),
+ var loading: Loading = Loading(
+  false
+ ),
  var data: Data<T>? = null
 ) {
 

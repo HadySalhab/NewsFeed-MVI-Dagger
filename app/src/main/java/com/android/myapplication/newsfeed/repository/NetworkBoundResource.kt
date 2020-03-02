@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.android.myapplication.newsfeed.ui.DataState
-import com.android.myapplication.newsfeed.ui.sources.Response
-import com.android.myapplication.newsfeed.ui.sources.ResponseType
+import com.android.myapplication.newsfeed.ui.Response
+import com.android.myapplication.newsfeed.ui.ResponseType
 import com.android.myapplication.newsfeed.util.*
 import com.android.myapplication.newsfeed.util.Constants.Companion.NETWORK_TIMEOUT
 import com.android.myapplication.newsfeed.util.Constants.Companion.TESTING_CACHE_DELAY
@@ -143,7 +143,12 @@ abstract class NetworkBoundResource  <ResponseObject,CacheObject,ViewStateType>
             responseType = ResponseType.Dialog()
         }
 
-        onCompleteJob(DataState.error(Response(msg, responseType)))
+        onCompleteJob(DataState.error(
+            Response(
+                msg,
+                responseType
+            )
+        ))
     }
     fun onCompleteJob(dataState: DataState<ViewStateType>){
         GlobalScope.launch(Dispatchers.Main) {
