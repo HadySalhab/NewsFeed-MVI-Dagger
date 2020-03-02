@@ -11,6 +11,7 @@ import com.android.myapplication.newsfeed.util.Constants.Companion.NETWORK_TIMEO
 import com.android.myapplication.newsfeed.util.Constants.Companion.TESTING_CACHE_DELAY
 import com.android.myapplication.newsfeed.util.Constants.Companion.TESTING_NETWORK_DELAY
 import com.android.myapplication.newsfeed.util.ErrorHandling.Companion.ERROR_CHECK_NETWORK_CONNECTION
+import com.android.myapplication.newsfeed.util.ErrorHandling.Companion.ERROR_EMPTY_RESPONSE
 import com.android.myapplication.newsfeed.util.ErrorHandling.Companion.ERROR_UNKNOWN
 import kotlinx.coroutines.*
 
@@ -93,7 +94,7 @@ abstract class NetworkBoundResource  <ResponseObject,CacheObject,ViewStateType>
             }
             is ApiEmptyResponse ->{
                 Log.e(TAG, "NetworkBoundResource: Request returned NOTHING (HTTP 204).")
-                onErrorReturn("HTTP 204. Returned NOTHING.", true, false)
+                onErrorReturn(ERROR_EMPTY_RESPONSE, true, false)
             }
         }
     }
