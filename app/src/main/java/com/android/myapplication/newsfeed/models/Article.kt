@@ -2,7 +2,7 @@ package com.android.myapplication.newsfeed.models
 
 data class Article(
 
-    val id:Long,
+    val id:Long = 0,
 
     var title:String?=null,
 
@@ -16,6 +16,8 @@ data class Article(
 
     var content:String?=null,
 
-    var source:Source
+    var source:Source,
+
+    var isFavorite:Boolean = false
 
 )
