@@ -115,6 +115,8 @@ dependencies {
     def material_version = "1.1.0-alpha09"
     implementation "com.google.android.material:material:$material_version"
 
+    //swipeRefreshLayout
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     // material dialogs
     def matieral_dialogs_version = "3.1.0"
     implementation "com.afollestad.material-dialogs:core:$matieral_dialogs_version"
