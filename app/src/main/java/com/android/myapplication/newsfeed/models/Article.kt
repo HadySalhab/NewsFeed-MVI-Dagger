@@ -2,22 +2,24 @@ package com.android.myapplication.newsfeed.models
 
 data class Article(
 
-    val id:Long = 0,
+    val id: Long = 0,
 
-    var title:String?=null,
+    var title: String? = null,
 
-    var description:String?=null,
+    var author: String? = null,
 
-    var url:String?=null,
+    var description: String? = null,
 
-    var urlToImage:String?=null,
+    var url: String? = null,
 
-    var publishDate:String?=null,
+    var urlToImage: String? = null,
 
-    var content:String?=null,
+    var publishDate: String? = null,
 
-    var source:Source,
+    var content: String? = null,
 
-    var isFavorite:Boolean = false
+    var source: Source? = null,
+
+    var isFavorite: Boolean = false
 
 )
