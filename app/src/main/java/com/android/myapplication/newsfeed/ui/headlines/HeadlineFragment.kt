@@ -1,5 +1,7 @@
 package com.android.myapplication.newsfeed.ui.headlines
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -97,5 +99,12 @@ class HeadlineFragment  : BaseHeadlineFragment(),HeadlinesListAdapter.Interactio
 
     override fun onItemSelected(position: Int, item: Article) {
         Log.d(TAG, "onItemSelected: position,article: ${position}, ${item} ")
+        fireIntent(item)
+    }
+    private fun fireIntent(item: Article){
+        val url = item.url
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(url)
+        startActivity(intent)
     }
 }

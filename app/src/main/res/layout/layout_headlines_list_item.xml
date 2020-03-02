@@ -11,8 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/small_margin"
-        android:clickable="true"
-        android:focusable="true"
         card_view:cardElevation="4dp"
         android:foreground="?android:attr/selectableItemBackground"
         card_view:cardCornerRadius="@dimen/card_corner_radius">

@@ -26,4 +26,7 @@ abstract class BaseFavoritesFragment : DaggerFragment (){
             appBarConfiguration
         )
     }
+    fun cancelActiveJobs(){
+        //viewModel.cancelActiveJobs()
+    }
 }

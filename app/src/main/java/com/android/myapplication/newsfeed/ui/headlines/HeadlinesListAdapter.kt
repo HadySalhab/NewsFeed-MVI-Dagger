@@ -1,6 +1,7 @@
 package com.android.myapplication.newsfeed.ui.headlines
 
 import android.text.format.DateUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -133,9 +134,11 @@ class HeadlinesListAdapter(
         val requestManager: RequestManager,
         private val interaction: Interaction?
     ) : RecyclerView.ViewHolder(itemView) {
+        private val TAG: String = "AppDebug"
 
-        fun bind(item: Article) = with(itemView) {
+        fun bind(item: Article) = with(this@HeadlinesViewHolder.itemView) {
             itemView.setOnClickListener {
+                Log.d(TAG, "HeadlinesViewHolder itemView clicked...")
                 interaction?.onItemSelected(adapterPosition, item)
             }
             requestManager

@@ -26,4 +26,7 @@ abstract class BaseSourcesFragment : DaggerFragment (){
             appBarConfiguration
         )
     }
+    fun cancelActiveJobs(){
+        //viewModel.cancelActiveJobs()
+    }
 }
