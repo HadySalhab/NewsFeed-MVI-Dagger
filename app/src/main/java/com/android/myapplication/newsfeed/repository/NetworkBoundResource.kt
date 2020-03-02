@@ -111,6 +111,7 @@ abstract class NetworkBoundResource  <ResponseObject,CacheObject,ViewStateType>
                 if(job.isCancelled){ //the only way the job is going to cancel is if we reached network timeout
                     Log.e(TAG, "NetworkBoundResource: Job has been cancelled.")
                     cause?.let{
+                        Log.e(TAG, "NetworkBoundResource: job has been cancelled. ${it.message}")
                         onErrorReturn(it.message, false, true) //message = ErrorHandling.UNABLE_TO_RESOLVE_HOST
                     }?: onErrorReturn(ERROR_UNKNOWN, false, true)
                 }
@@ -146,7 +147,7 @@ abstract class NetworkBoundResource  <ResponseObject,CacheObject,ViewStateType>
     }
     fun onCompleteJob(dataState: DataState<ViewStateType>){
         GlobalScope.launch(Dispatchers.Main) {
-            job.complete()
+            job.complete() //this will invoke the invokeOnCompletion method
             setValue(dataState)
         }
     }
@@ -161,7 +162,7 @@ abstract class NetworkBoundResource  <ResponseObject,CacheObject,ViewStateType>
 
     abstract fun createCall(): LiveData<GenericApiResponse<ResponseObject>>
 
-    abstract fun loadFromCache(): LiveData<CacheObject>
+    abstract fun loadFromCache(): CacheObject?
 
 
 
