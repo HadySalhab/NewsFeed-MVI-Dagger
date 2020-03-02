@@ -19,5 +19,5 @@ data class ArticleDb(
     @ColumnInfo(name="publish_date")
     var publishDate:String?=null,
     var content:String?=null,
-    var source: Source
+    var source: Source?=null
 )
