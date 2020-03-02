@@ -7,4 +7,7 @@
     <string name="headlines_label">Headlines</string>
     <string name="sources_label">Sources</string>
     <string name="articles_source_label">News</string>
+    <string name="text_error">Error</string>
+    <string name="text_success">Success</string>
+    <string name="text_ok">OK</string>
 </resources>
