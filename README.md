@@ -17,7 +17,7 @@ NewsFeed, provides live top and breaking headlines for a country, specific categ
 **Define key in build.gradle**
 
 In your Android studio root directory, locate the `gradle.properties` under `.gradle` folder and add the following:
-Add `News_ApiKey = "YOUR-API-KEY"`.
+Add `NEWS_APIKEY = "YOUR-API-KEY"`.
 
 ## Language
 
