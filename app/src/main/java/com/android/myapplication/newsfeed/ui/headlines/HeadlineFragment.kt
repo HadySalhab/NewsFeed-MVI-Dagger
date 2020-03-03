@@ -72,15 +72,15 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
     private fun subscribeObservers() {
         viewModel.dataState.observe(viewLifecycleOwner, Observer { dataState ->
             dataState?.let {
-                stateChangeListener?.onDataStateChange(dataState) //let the listener invoke their onDataStateChange impl (error, loading ,data response)
+                stateChangeListener?.onDataStateChange(dataState) //Listener(BaseActivity/Activity) will handle the loading, error dialog/toast, data response msg
                 //this component handle the data data
                 dataState.data?.let {
-                    it.data?.let { event ->
-                        event.getContentIfNotHandled()?.let { viewState ->
+                    it.data?.let { eventViewState ->
+                        eventViewState.getContentIfNotHandled()?.let { networkViewState ->
                             Log.d(TAG, "HeadlineFragment: dataStateReturned: with data!=null, updating headlinesList")
                             //we are updating a field in the viewState, which will update the viewState itself
                             // and fire observers
-                            viewModel.setHeadlineListData(viewState.headlinesFields.headlinesList)
+                            viewModel.setHeadlineListData(networkViewState.headlinesFields.headlinesList)
                         }
                     }
                 }
@@ -98,9 +98,9 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
 
         //As soon as the HeadlineFrag is created , it will receive the viewState (if available) in the ViewModel
         // and everTime the viewState is changed , we update the ui
-        viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
-            Log.d(TAG, "HeadlineFragment: viewState observer: ${viewState}")
-            viewState?.let {
+        viewModel.viewState.observe(viewLifecycleOwner, Observer { viewModelViewState ->
+            Log.d(TAG, "HeadlineFragment: viewState observer: ${viewModelViewState}")
+            viewModelViewState?.let {
                 headlinesAdapter.submitList(
                     list = it.headlinesFields.headlinesList, //could be empty or not
                     isQueryExhausted = true
