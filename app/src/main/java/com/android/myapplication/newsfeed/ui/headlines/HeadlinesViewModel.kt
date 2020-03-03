@@ -23,14 +23,6 @@ constructor(
     private val requestManager: RequestManager
 
 ) : BaseViewModel<HeadlinesStateEvent, HeadlinesViewState>() {
-
-    private val _executeQueryEvent = MutableLiveData<Event<Boolean>>(
-        Event(true)
-    ) //this event will set to true when this viewModel is first created
-    val executeQueryEvent: LiveData<Event<Boolean>>
-        get() = _executeQueryEvent
-
-
     override fun initNewViewState(): HeadlinesViewState {
         return HeadlinesViewState()
     }

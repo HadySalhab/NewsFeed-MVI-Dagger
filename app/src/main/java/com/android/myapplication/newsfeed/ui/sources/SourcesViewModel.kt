@@ -18,9 +18,6 @@ constructor(
     private val sourcesRepository:SourceRepository
 ) : BaseViewModel<SourcesStateEvent,SourcesViewState>() {
 
-    private val _executeQueryEvent = MutableLiveData<Event<Boolean>>(Event(true)) //this event will set to true when this viewModel is first created
-    val executeQueryEvent: LiveData<Event<Boolean>>
-        get() = _executeQueryEvent
 
 
     override fun handleStateEvent(stateEvent: SourcesStateEvent): LiveData<DataState<SourcesViewState>> {

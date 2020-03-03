@@ -14,6 +14,11 @@ abstract class BaseViewModel<StateEvent, ViewState> : ViewModel()
     protected val _stateEvent: MutableLiveData<StateEvent> = MutableLiveData()
     protected val _viewState: MutableLiveData<ViewState> = MutableLiveData()
 
+    private val _executeQueryEvent = MutableLiveData<Event<Boolean>>(Event(true)) //this event will set to true when this viewModel is first created
+    val executeQueryEvent: LiveData<Event<Boolean>>
+        get() = _executeQueryEvent
+
+
     val viewState: LiveData<ViewState>
         get() = _viewState
 
