@@ -1,6 +1,4 @@
-# NewsFeed-MVI
-
-# NewsFeed
+# NewsFeed-MVI-Dagger
 
 ## Project Overview
 
