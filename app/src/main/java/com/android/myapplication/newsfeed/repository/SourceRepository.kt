@@ -27,11 +27,14 @@ class SourceRepository
 constructor(
     val newsApi: NewsApi,
     val networkUtil: NetworkUtil
-): JobManager("HeadlinesRepository") {
+): JobManager("SourceRepository") {
     private val TAG: String = "AppDebug"
-
     fun getSources(): LiveData<DataState<SourcesViewState>> {
-        return object :NetworkBoundResource<SourcesResponse,Void,SourcesViewState>(networkUtil.isConnectedToTheInternet(),false){
+        Log.d(TAG, "SourceRepository: getSources() is called ")
+        return object : NetworkBoundResource<SourcesResponse, Void, SourcesViewState>(
+            networkUtil.isConnectedToTheInternet(),
+            true
+        ) {
             override fun setJob(job: Job) {
                 addJob("getSources", job)
             }
@@ -41,35 +44,41 @@ constructor(
             }
 
             override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<SourcesResponse>) {
+                Log.d(TAG, "handleApiSuccessResponse: ${response.body}")
                 val sourceList: ArrayList<Source> = ArrayList()
                 //handleApiSuccessResponse is already called inside a coroutine with IO dispatcher
-                val sourcesNetwork :List<SourceNetwork>? = response.body.sourcesNetwork
+                val sourcesNetwork: List<SourceNetwork>? = response.body.sourcesNetwork
 
 
-                sourcesNetwork?.forEach { sourceNetwork->
+                sourcesNetwork?.forEach { sourceNetwork ->
                     sourceList.add(
-                           Source(
-                               sourceNetwork.id,
-                               sourceNetwork.name,
-                               sourceNetwork.description,
-                               sourceNetwork.url,
-                               sourceNetwork.country,
-                               sourceNetwork.language,
-                               sourceNetwork.category
-                           )
+                        Source(
+                            sourceNetwork.id,
+                            sourceNetwork.name,
+                            sourceNetwork.description,
+                            sourceNetwork.url,
+                            sourceNetwork.country,
+                            sourceNetwork.language,
+                            sourceNetwork.category
                         )
-                    }
+                    )
+                }
 
                 //switch context because handleApiSuccessResponse is running inside IO dispatcher
-                withContext(Dispatchers.Main){
-                    onCompleteJob(DataState.data(data = SourcesViewState(
-                        sourcesField = SourcesViewState.SourcesField(sourceList)
-                    )))
+                withContext(Dispatchers.Main) {
+                    onCompleteJob(
+                        DataState.data(
+                            data = SourcesViewState(
+                                sourcesField = SourcesViewState.SourcesField(sourceList)
+                            )
+                        )
+                    )
                 }
 
             }
 
             override fun createCall(): LiveData<GenericApiResponse<SourcesResponse>> {
+                Log.d(TAG, "SourceRepository : createCall: ")
                 return newsApi.getSources()
             }
 
@@ -77,6 +86,6 @@ constructor(
                 return null
             }
 
-        } .asLiveData()
+        }.asLiveData()
     }
 }
