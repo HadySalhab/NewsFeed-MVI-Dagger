@@ -6,25 +6,24 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 
 import com.android.myapplication.newsfeed.R
+import com.android.myapplication.newsfeed.models.Source
 import com.android.myapplication.newsfeed.ui.sources.BaseCategoriesSourcesFragment
+import com.android.myapplication.newsfeed.util.SourcesCategories
 
 /**
  * A simple [Fragment] subclass.
  */
-class ScienceFragment : BaseCategoriesSourcesFragment() {
+class ScienceFragment : BaseCategoriesFragment() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_science, container, false)
-    }
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG, "ScienceFragment: onViewCreated: ${viewModel}")
+    override fun inflateView(inflater: LayoutInflater, container: ViewGroup?): View =inflater.inflate(R.layout.fragment_science,container,false)
+
+    override fun findRV(view:View): RecyclerView = view.findViewById(R.id.rv_science)
+
+    override fun filterSourceList(sourceList: List<Source>): List<Source>  = sourceList.filter { source ->
+        source.category.equals(SourcesCategories.SCIENCE)
     }
 
 }
