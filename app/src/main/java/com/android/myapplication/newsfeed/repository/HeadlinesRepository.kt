@@ -32,7 +32,8 @@ constructor(
 
     fun getTopHeadlines(
         country: String = "",
-        category: String = "general"
+        category: String = "general",
+        page:Int
     ): LiveData<DataState<HeadlinesViewState>> {
         return object :
             NetworkBoundResource<HeadlinesResponse, List<ArticleDb>, HeadlinesViewState>(
@@ -48,39 +49,43 @@ constructor(
             }
 
             override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<HeadlinesResponse>) {
+
                 val articleList: ArrayList<Article> = ArrayList()
                 //handleApiSuccessResponse is already called inside a coroutine with IO dispatcher
                 val articleDbList: List<ArticleDb>? = loadFromCache()
                 Log.d(TAG, "handleApiSuccessResponse: ${response.body.status}")
                 val articleNetworkList :List<ArticleNetwork>? = response.body.articlesNetwork
-
-
-                if(articleDbList.isNullOrEmpty()){
-                    articleNetworkList?.forEach { articleNetwork->
-                        articleList.add(
-                            Article(
-                                title = articleNetwork.title,
-                                description = articleNetwork.description,
-                                url = articleNetwork.url,
-                                urlToImage = articleNetwork.urlToImage,
-                                publishDate = articleNetwork.publishDate,
-                                content = articleNetwork.content,
-                                source = articleNetwork.source
+                var isQueryExhausted:Boolean = response.body.totalResults<page*20 //20 is the default number of articles returned per page
+                    if(!articleNetworkList.isNullOrEmpty()) {
+                        articleNetworkList.forEach { articleNetwork->
+                            articleList.add(
+                                Article(
+                                    title = articleNetwork.title,
+                                    description = articleNetwork.description,
+                                    url = articleNetwork.url,
+                                    urlToImage = articleNetwork.urlToImage,
+                                    publishDate = articleNetwork.publishDate,
+                                    content = articleNetwork.content,
+                                    source = articleNetwork.source
+                                )
                             )
-                        )
-                    }
+
+                        }
+
+
+
                 }
 
                 //switch context because handleApiSuccessResponse is running inside IO dispatcher
                 withContext(Dispatchers.Main){
-                   onCompleteJob(DataState.data(HeadlinesViewState(HeadlinesViewState.HeadlineFields(articleList))))
+                   onCompleteJob(DataState.data(HeadlinesViewState(HeadlinesViewState.HeadlineFields(headlinesList = articleList,isQueryExhausted = isQueryExhausted))))
                 }
 
 
             }
 
             override fun createCall(): LiveData<GenericApiResponse<HeadlinesResponse>> {
-                return newsApi.getTopHeadlines()
+                return newsApi.getTopHeadlines(page = page)
             }
 
             override fun loadFromCache(): List<ArticleDb>? {

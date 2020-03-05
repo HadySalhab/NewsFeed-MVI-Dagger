@@ -1,4 +1,4 @@
-package com.android.myapplication.newsfeed.ui.headlines
+package com.android.myapplication.newsfeed.ui.headlines.viewmodel
 
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
@@ -32,7 +32,8 @@ constructor(
             is HeadlinesStateEvent.HeadlinesSearchEvent -> {
                 return headlinesRepository.getTopHeadlines(
                     stateEvent.country,
-                    stateEvent.category
+                    stateEvent.category,
+                    stateEvent.page
                 )
             }
             is HeadlinesStateEvent.None -> {
@@ -41,29 +42,7 @@ constructor(
         }
     }
 
-    fun setQuery(query: String) {
-        val update = getCurrentViewStateOrNew()
-        if (query.equals(update.headlinesFields.searchQuery)) {
-            return
-        }
-        update.headlinesFields.searchQuery = query
-        _viewState.value = update
-    }
-    fun setErrorScreenMsg(errorScreenMsg:String){
-        val update = getCurrentViewStateOrNew()
-        if (errorScreenMsg.equals(update.headlinesFields.errorScreenMsg)) {
-            return
-        }
-        update.headlinesFields.errorScreenMsg = errorScreenMsg
-        _viewState.value = update
-    }
 
-    fun setHeadlineListData(headlinesList: List<Article>) {
-        val update = getCurrentViewStateOrNew()
-        //we are not checking if it's the same list being passed, because RecycleView DiffUtil will take care of it
-        update.headlinesFields.headlinesList = headlinesList
-        _viewState.value = update
-    }
 
     fun cancelActiveJobs() {
         headlinesRepository.cancelActiveJobs() //repository extends JobManager, cancelActiveJobs is part of the job Manager

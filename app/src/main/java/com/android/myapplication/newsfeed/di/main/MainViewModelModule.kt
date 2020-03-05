@@ -3,7 +3,7 @@ package com.android.myapplication.newsfeed.di.main
 import androidx.lifecycle.ViewModel
 import com.android.myapplication.newsfeed.di.ViewModelKey
 import com.android.myapplication.newsfeed.ui.favorites.FavoritesViewModel
-import com.android.myapplication.newsfeed.ui.headlines.HeadlinesViewModel
+import com.android.myapplication.newsfeed.ui.headlines.viewmodel.HeadlinesViewModel
 import com.android.myapplication.newsfeed.ui.sources.SourcesViewModel
 import dagger.Binds
 import dagger.Module

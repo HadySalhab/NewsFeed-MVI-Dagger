@@ -13,7 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.myapplication.newsfeed.R
 import com.android.myapplication.newsfeed.models.Article
+import com.android.myapplication.newsfeed.ui.DataState
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesStateEvent
+import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesViewState
+import com.android.myapplication.newsfeed.ui.headlines.viewmodel.*
 import com.bumptech.glide.RequestManager
 import kotlinx.android.synthetic.main.fragment_headlines.*
 import kotlinx.android.synthetic.main.fragment_headlines.view.*
@@ -62,7 +65,7 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
 
                 queryEvent.getContentIfNotHandled()?.let { //only proceed if this query has never been handled
                     Log.d(TAG, "HeadlineFragment: executeQueryEvent: $queryEvent")
-                    viewModel.setStateEvent(HeadlinesStateEvent.HeadlinesSearchEvent())
+                    viewModel.loadFirstPage("us","general")
                 }
             })
 
@@ -72,27 +75,8 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
     private fun subscribeObservers() {
         viewModel.dataState.observe(viewLifecycleOwner, Observer { dataState ->
             dataState?.let {
-                stateChangeListener?.onDataStateChange(dataState) //Listener(BaseActivity/Activity) will handle the loading, error dialog/toast, data response msg
-                //this component handle the data data
-                dataState.data?.let {
-                    it.data?.let { eventViewState ->
-                        eventViewState.getContentIfNotHandled()?.let { networkViewState ->
-                            Log.d(TAG, "HeadlineFragment: dataStateReturned: with data!=null, updating headlinesList")
-                            //we are updating a field in the viewState, which will update the viewState itself
-                            // and fire observers
-                            viewModel.setHeadlineListData(networkViewState.headlinesFields.headlinesList)
-                        }
-                    }
-                }
-
-                it.error?.let { errorEvent ->
-                    //handle the error if not null
-                    //if the errorEvent hasNotBeenHandled, update the view state to update the ui, otherwise do nothing
-                    errorEvent.getContentIfNotHandled()?.let{ stateError->
-                        Log.d(TAG, "HeadlineFragment: dataStateReturned: with error!=null, updating errorMsgScreen")
-                        viewModel.setErrorScreenMsg(stateError.response.message?:"")
-                    }
-                }
+                stateChangeListener?.onDataStateChange(dataState) //Listener(BaseActivity/Activity) will handle the loading (progress bar), error dialog/toast, data response msg (in this app is always null)
+                handlePagination(dataState)
             }
         })
 
@@ -103,12 +87,12 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
             viewModelViewState?.let {
                 headlinesAdapter.submitList(
                     list = it.headlinesFields.headlinesList, //could be empty or not
-                    isQueryExhausted = true
+                    isQueryExhausted = viewModelViewState.headlinesFields.isQueryExhausted
                 )
 
-                //only show error screen if the list is empty
+                //only show error screen if the list is empty and the error message is not empty
                 //because if the user retrieved the list successfully, turns the wifi off and then pull to refresh, we dont want to show the error screen on top of the list
-                if(it.headlinesFields.headlinesList.isNullOrEmpty()){
+                if(it.headlinesFields.headlinesList.isNullOrEmpty() && !it.headlinesFields.errorScreenMsg.isEmpty()){
                     tv_error!!.visibility = View.VISIBLE
                     tv_error!!.text = it.headlinesFields.errorScreenMsg
                 }else{
@@ -116,6 +100,33 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
                 }
             }
         })
+    }
+    private fun handlePagination(dataState:DataState<HeadlinesViewState>){
+        //this component handle the data data
+
+        //we update the viewstate field 'QueryInProgress'
+        //so we can be able to fire another request when we need to , and prevent another request when its currently loading
+        viewModel.setQueryInProgress(dataState.loading.isLoading)
+
+
+        dataState.data?.let {
+            it.data?.let { eventViewState ->
+                eventViewState.getContentIfNotHandled()?.let { networkViewState ->
+                    Log.d(TAG, "HeadlineFragment: dataStateReturned: with data!=null, updating headlinesList")
+                    //we are updating a field in the viewState, which will update the viewState itself
+                    // and fire observers
+                    viewModel.handlePaginationSuccessResult(networkViewState)
+                }
+            }
+        }
+        dataState.error?.let { errorEvent ->
+            //handle the error if not null
+            //if the errorEvent hasNotBeenHandled, update the view state to update the ui, otherwise do nothing
+            errorEvent.getContentIfNotHandled()?.let{ stateError->
+                Log.d(TAG, "HeadlineFragment: dataStateReturned: with error!=null, updating errorMsgScreen")
+                viewModel.setErrorScreenMsg(stateError.response.message?:"")
+            }
+        }
     }
 
     private fun initRV() {
@@ -130,6 +141,7 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
                     val lastPosition = layoutManager.findLastVisibleItemPosition()
                     if (lastPosition == headlinesAdapter.itemCount.minus(1)) {
                         Log.d(TAG, "HeadlineFragment: load next page...")
+                        viewModel.loadNextPage()
                     }
                 }
             })

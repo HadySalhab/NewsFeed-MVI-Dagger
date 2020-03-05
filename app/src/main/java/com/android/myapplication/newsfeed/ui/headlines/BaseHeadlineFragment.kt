@@ -11,6 +11,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.android.myapplication.newsfeed.R
 import com.android.myapplication.newsfeed.ui.DataStateChangeListener
+import com.android.myapplication.newsfeed.ui.headlines.viewmodel.HeadlinesViewModel
 import com.android.myapplication.newsfeed.viewmodels.ViewModelProviderFactory
 import dagger.android.support.DaggerFragment
 import java.lang.Exception
