@@ -33,6 +33,7 @@ constructor(
                 return headlinesRepository.getTopHeadlines(
                     stateEvent.country,
                     stateEvent.category,
+                    stateEvent.searchQuery,
                     stateEvent.page
                 )
             }

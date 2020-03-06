@@ -36,3 +36,9 @@ fun HeadlinesViewModel.getHeadlinesList():List<Article>{
         return it.headlinesFields.headlinesList
     }
 }
+
+fun HeadlinesViewModel.getQuery():String{
+    getCurrentViewStateOrNew()?.let {
+        return it.headlinesFields.searchQuery
+    }
+}

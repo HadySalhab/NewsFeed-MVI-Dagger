@@ -14,6 +14,7 @@ interface NewsApi {
         @Query("country") country: String? = "us",
         @Query("category") category: String = "general",
         @Query("page") page: Int = 1,
+        @Query("q") searchQuery:String ="",
         @Query("apiKey") apiKey: String = BuildConfig.API_KEY
     ): LiveData<GenericApiResponse<HeadlinesResponse>>
 

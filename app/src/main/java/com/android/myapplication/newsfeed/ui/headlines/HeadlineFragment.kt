@@ -1,12 +1,15 @@
 package com.android.myapplication.newsfeed.ui.headlines
 
+import android.app.SearchManager
+import android.content.Context.SEARCH_SERVICE
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
+import android.widget.SearchView
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,6 +30,7 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
     private lateinit var headlinesAdapter: HeadlinesListAdapter
     private  var recyclerView : RecyclerView?=null
     private  var tv_error:TextView?=null
+    private lateinit var searchView:androidx.appcompat.widget.SearchView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,10 +38,12 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
         savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
+        setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.fragment_headlines, container, false)
         recyclerView = view.findViewById(R.id.rv_headlines)
         tv_error = view.findViewById(R.id.tv_error)
         initRV()
+
         return view
     }
 
@@ -49,7 +55,6 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
         subscribeObservers()
         executeRequest()
     }
-
     private fun executeRequest() {
         // no point of firing the event everytime we rotate or change graph
         //as long as the viewModel is alive, no need to re-fire
@@ -59,14 +64,16 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
         // NOTE: even though the DataState member variables are wrapped in event,
         // it will be refreshed because its event object are being updated, in the networkBoundResources and repositories every time we fire this request
         viewModel.executeQueryEvent.observe(viewLifecycleOwner, Observer { queryEvent->
-
                 queryEvent.getContentIfNotHandled()?.let { //only proceed if this query has never been handled
                     Log.d(TAG, "HeadlineFragment: executeQueryEvent: $queryEvent")
-                    viewModel.loadFirstPage("us","general")
+                    viewModel.loadFirstPage("us","general","")
                 }
             })
+    }
 
-
+    private fun executeSearchQuery(query:String){
+        viewModel.loadFirstPage("","",query)
+        resetUI()
     }
 
     private fun subscribeObservers() {
@@ -145,6 +152,34 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
             adapter = headlinesAdapter
         }
     }
+    private fun  initSV(menu: Menu){
+        activity?.apply {
+            val searchManager = getSystemService((SEARCH_SERVICE)) as SearchManager
+            searchView = menu.findItem(R.id.action_search).actionView as androidx.appcompat.widget.SearchView
+            searchView.maxWidth = Integer.MAX_VALUE
+            searchView.setIconifiedByDefault(true)
+            searchView.isSubmitButtonEnabled = true
+        }
+        val searchPlate = searchView.findViewById(R.id.search_src_text) as EditText
+        searchPlate.setOnEditorActionListener { v, actionId, event ->
+            if(actionId == EditorInfo.IME_ACTION_UNSPECIFIED || actionId == EditorInfo.IME_ACTION_SEARCH){
+                val searchQuery = v.text.toString()
+                executeSearchQuery(searchQuery)
+            }
+            true
+        }
+        (searchView.findViewById(R.id.search_go_btn) as View).setOnClickListener {
+            val searchQuery = searchPlate.text.toString()
+          executeSearchQuery(searchQuery)
+        }
+    }
+
+    private fun resetUI(){
+        //scroll the recyclerview to position zero
+        recyclerView?.smoothScrollToPosition(0)
+        //stateChangeListener is the activity or the base activity
+        stateChangeListener.hideSoftKeyboard()
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -162,5 +197,11 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
         val intent = Intent(Intent.ACTION_VIEW)
         intent.data = Uri.parse(url)
         startActivity(intent)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.search_menu,menu)
+        initSV(menu)
     }
 }

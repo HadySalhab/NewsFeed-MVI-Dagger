@@ -31,8 +31,9 @@ constructor(
     private val TAG: String = "AppDebug"
 
     fun getTopHeadlines(
-        country: String = "",
-        category: String = "general",
+        country: String,
+        category: String,
+        searchQuery:String,
         page:Int
     ): LiveData<DataState<HeadlinesViewState>> {
         return object :
@@ -55,7 +56,7 @@ constructor(
                 val articleDbList: List<ArticleDb>? = loadFromCache()
                 Log.d(TAG, "handleApiSuccessResponse: ${response.body.status}")
                 val articleNetworkList :List<ArticleNetwork>? = response.body.articlesNetwork
-                var isQueryExhausted:Boolean = response.body.totalResults<page*20 //20 is the default number of articles returned per page
+                val isQueryExhausted:Boolean = response.body.totalResults<page*20 //20 is the default number of articles returned per page
                     if(!articleNetworkList.isNullOrEmpty()) {
                         articleNetworkList.forEach { articleNetwork->
                             articleList.add(
@@ -85,7 +86,7 @@ constructor(
             }
 
             override fun createCall(): LiveData<GenericApiResponse<HeadlinesResponse>> {
-                return newsApi.getTopHeadlines(page = page)
+                return newsApi.getTopHeadlines(country,category,page,searchQuery)
             }
 
             override fun loadFromCache(): List<ArticleDb>? {

@@ -21,4 +21,6 @@
     <string name="tab_sports">Sports</string>
     <string name="tab_technology">Technology</string>
     <string name="check_network">Check network connection</string>
+    <string name="menu_item_filter">Filter</string>
+    <string name="menu_item_search">Search</string>
 </resources>

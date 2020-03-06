@@ -4,6 +4,7 @@ sealed class HeadlinesStateEvent {
     data class HeadlinesSearchEvent(
         var country:String ,
         var category:String,
+        var searchQuery:String,
         var page:Int
     ): HeadlinesStateEvent()
     class None: HeadlinesStateEvent()
