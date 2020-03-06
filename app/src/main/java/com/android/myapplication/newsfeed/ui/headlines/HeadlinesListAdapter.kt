@@ -19,8 +19,11 @@ class HeadlinesListAdapter(
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val TAG: String = "AppDebug"
+    //identifier of no more result article
     private val NO_MORE_RESULTS = -1
+    //Identifier of a default article
     private val HEADLINE_ITEM = 0
+    //article Item with id = -1
     private val NO_MORE_RESULTS_HEADLINE_MARKER = Article(
         id = NO_MORE_RESULTS.toLong()
     )
@@ -114,18 +117,21 @@ class HeadlinesListAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
+        //if the id of the last article is greater than -1, means its a normal article
+        //otherwise its a no more result article
         if(differ.currentList[position].id > -1){
-            return HEADLINE_ITEM //by default, headlines will have an id of at least 0
+            return HEADLINE_ITEM
         }
-        return NO_MORE_RESULTS //NO_MORE_RESULTS_HEADLINE_MARKER have an id of -1
+        return NO_MORE_RESULTS
     }
 
     fun submitList(list: List<Article>?, isQueryExhausted:Boolean) {
         val newList = list?.toMutableList()
-        if(isQueryExhausted){ //when query is exhausted show the  NO_MORE_RESULTS_HEADLINE_MARKER
-            newList?.add(NO_MORE_RESULTS_HEADLINE_MARKER) //APPEND TO THE SUBMITTED LIST, THE NO MORE RESULT LIST ITEM
+        if(isQueryExhausted){
+            //if the query is exhausted , append to the list the no more result article (id = -1 )
+            newList?.add(NO_MORE_RESULTS_HEADLINE_MARKER)
         }
-        differ.submitList(list)
+        differ.submitList(newList)
     }
 
     class HeadlinesViewHolder

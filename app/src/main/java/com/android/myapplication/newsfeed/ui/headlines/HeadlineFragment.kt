@@ -14,12 +14,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.myapplication.newsfeed.R
 import com.android.myapplication.newsfeed.models.Article
 import com.android.myapplication.newsfeed.ui.DataState
-import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesStateEvent
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesViewState
 import com.android.myapplication.newsfeed.ui.headlines.viewmodel.*
 import com.bumptech.glide.RequestManager
-import kotlinx.android.synthetic.main.fragment_headlines.*
-import kotlinx.android.synthetic.main.fragment_headlines.view.*
 import javax.inject.Inject
 
 class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interaction {
