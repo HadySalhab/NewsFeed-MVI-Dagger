@@ -1,6 +1,6 @@
 package com.android.myapplication.newsfeed.util
 
-class SourcesCategories {
+class SourcesCategoriesAndCountries {
     companion object {
         const val BUSINESS = "business"
         const val ENTERTAINMENT = "entertainment"
@@ -9,6 +9,7 @@ class SourcesCategories {
         const val SCIENCE = "science"
         const val SPORTS = "sports"
         const val TECHNOLOGY = "technology"
-
+        const val USA = "us"
+        const val AUSTRALIA = "au"
     }
 }

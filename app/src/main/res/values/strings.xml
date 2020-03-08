@@ -23,4 +23,6 @@
     <string name="check_network">Check network connection</string>
     <string name="menu_item_filter">Filter</string>
     <string name="menu_item_search">Search</string>
+    <string name="australia">Australia</string>
+    <string name="united_states">United States</string>
 </resources>

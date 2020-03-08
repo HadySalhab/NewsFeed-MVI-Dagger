@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <View
         android:id="@+id/focusable_view"
@@ -10,7 +11,28 @@
         android:layout_height="0.5dp"
         android:focusableInTouchMode="true"/>
 
+    <HorizontalScrollView
+        android:id="@+id/chips"
+        android:layout_alignParentTop="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/region_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:singleSelection="true"
+            app:singleLine="true"
+            android:padding="@dimen/medium_padding"/>
+    </HorizontalScrollView>
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:layout_below="@id/chips"
+        android:layout_marginTop="@dimen/medium_margin"
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -32,10 +54,10 @@
         android:drawablePadding="4dp"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
         android:textColor="@color/secondary_color"
-        android:layout_gravity="center"
+        android:layout_centerInParent="true"
         android:drawableEnd="@drawable/ic_wifi"
         android:text="@string/check_network"
         android:visibility="gone"
         />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</RelativeLayout>

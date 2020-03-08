@@ -9,19 +9,24 @@ import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
-import android.widget.SearchView
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
 import com.android.myapplication.newsfeed.R
 import com.android.myapplication.newsfeed.models.Article
 import com.android.myapplication.newsfeed.ui.DataState
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesViewState
 import com.android.myapplication.newsfeed.ui.headlines.viewmodel.*
+import com.android.myapplication.newsfeed.util.SourcesCategoriesAndCountries
 import com.bumptech.glide.RequestManager
-import kotlinx.android.synthetic.main.fragment_headlines.*
+import java.nio.channels.Pipe
 import javax.inject.Inject
 
 class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interaction,SwipeRefreshLayout.OnRefreshListener {
@@ -71,13 +76,21 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
         viewModel.executeQueryEvent.observe(viewLifecycleOwner, Observer { queryEvent->
                 queryEvent.getContentIfNotHandled()?.let { //only proceed if this query has never been handled
                     Log.d(TAG, "HeadlineFragment: executeQueryEvent: $queryEvent")
-                    viewModel.loadFirstPage("us","general","")
+                    with(viewModel) {
+                        with(getVSHeadlines()) {
+                            loadFirstPage(country, category)
+                        }
+                    }
                 }
             })
     }
 
     private fun executeSearchQuery(query:String){
-        viewModel.loadFirstPage("","",query)
+        with(viewModel){
+            with(getVSHeadlines()){
+                loadFirstPage(country,category,query)
+            }
+        }
         resetUI()
     }
 
@@ -115,8 +128,9 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
 
         //we update the viewstate field 'QueryInProgress'
         //so we can be able to fire another request when we need to , and prevent another request when its currently loading
-        viewModel.setQueryInProgress(dataState.loading.isLoading)
-
+        viewModel.updateViewState { headlinesFields->
+            headlinesFields.isQueryInProgress = dataState.loading.isLoading
+        }
 
         dataState.data?.let {
             it.data?.let { eventViewState ->
@@ -133,7 +147,9 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
             //if the errorEvent hasNotBeenHandled, update the view state to update the ui, otherwise do nothing
             errorEvent.getContentIfNotHandled()?.let{ stateError->
                 Log.d(TAG, "HeadlineFragment: dataStateReturned: with error!=null, updating errorMsgScreen")
-                viewModel.setErrorScreenMsg(stateError.response.message?:"")
+                viewModel.updateViewState { headlinesFields->
+                    headlinesFields.errorScreenMsg = stateError.response.message?:""
+                }
             }
         }
     }
@@ -212,7 +228,73 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
     }
 
     override fun onRefresh() {
-        viewModel.loadFirstPage(viewModel.getCountry(),viewModel.getCategory(),viewModel.getQuery())
+        with(viewModel){
+            with(getVSHeadlines()){
+                loadFirstPage(country,category,searchQuery)
+            }
+        }
         swipeRefreshLayout.isRefreshing = false
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when(item.itemId){
+            R.id.action_filter_settings->{
+                openCountryOptions()
+                true
+            }
+            else->{
+                super.onOptionsItemSelected(item)
+            }
+        }
+
+    private fun openCountryOptions(){
+        activity?.let {
+            val dialog = MaterialDialog(it).noAutoDismiss().customView(R.layout.layout_articles_country)
+            dialog.getCustomView().run{
+                val selectedCountry = viewModel.getVSHeadlines().country
+                with(findViewById<RadioGroup>(R.id.country_options)){
+                    if(selectedCountry.equals(SourcesCategoriesAndCountries.AUSTRALIA)){
+                        check(R.id.australia_option)
+                    }else{
+                       check(R.id.united_state_option)
+                    }
+                }
+                findViewById<TextView>(R.id.positive_button).setOnClickListener {
+                    val newSelectedCountry = findViewById<RadioButton>(findViewById<RadioGroup>(R.id.country_options).checkedRadioButtonId)
+                    var countryDefault = SourcesCategoriesAndCountries.AUSTRALIA
+                    if(newSelectedCountry.text.toString().equals(getString(R.string.united_states))){
+
+                        countryDefault = SourcesCategoriesAndCountries.USA
+
+                    }
+                    Log.d(TAG, "openCountryOptions: countryDefault $countryDefault")
+
+                       viewModel.updateViewState { field->
+                            field.country = countryDefault
+                            field.searchQuery = EMPTY_STRING
+                        }
+
+                    with(viewModel.getVSHeadlines()){
+                        Log.d(TAG, "openCountryOptions: $country, $category")
+                        viewModel.loadFirstPage(country,category)
+                    }
+                    dialog.dismiss()
+                }
+                findViewById<TextView>(R.id.negative_button).setOnClickListener {
+                    dialog.dismiss()
+                }
+
+                dialog.show()
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        with(viewModel){
+            with(getVSHeadlines()){
+                saveCategoryAndCountry(country,category)
+            }
+        }
+
     }
 }
