@@ -14,15 +14,17 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.myapplication.newsfeed.R
 import com.android.myapplication.newsfeed.models.Article
 import com.android.myapplication.newsfeed.ui.DataState
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesViewState
 import com.android.myapplication.newsfeed.ui.headlines.viewmodel.*
 import com.bumptech.glide.RequestManager
+import kotlinx.android.synthetic.main.fragment_headlines.*
 import javax.inject.Inject
 
-class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interaction {
+class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interaction,SwipeRefreshLayout.OnRefreshListener {
 
     @Inject
     lateinit var requestManager: RequestManager
@@ -31,6 +33,7 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
     private  var recyclerView : RecyclerView?=null
     private  var tv_error:TextView?=null
     private lateinit var searchView:androidx.appcompat.widget.SearchView
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,6 +45,8 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
         val view = inflater.inflate(R.layout.fragment_headlines, container, false)
         recyclerView = view.findViewById(R.id.rv_headlines)
         tv_error = view.findViewById(R.id.tv_error)
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh)
+        swipeRefreshLayout.setOnRefreshListener(this)
         initRV()
 
         return view
@@ -185,6 +190,7 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
         super.onDestroyView()
         recyclerView!!.adapter = null //to avoid memory leak
         tv_error = null
+
     }
 
     override fun onItemSelected(position: Int, item: Article) {
@@ -203,5 +209,10 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.search_menu,menu)
         initSV(menu)
+    }
+
+    override fun onRefresh() {
+        viewModel.loadFirstPage(viewModel.getCountry(),viewModel.getCategory(),viewModel.getQuery())
+        swipeRefreshLayout.isRefreshing = false
     }
 }
