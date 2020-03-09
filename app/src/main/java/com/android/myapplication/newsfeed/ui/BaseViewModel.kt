@@ -1,5 +1,6 @@
 package com.android.myapplication.newsfeed.ui
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -30,6 +31,7 @@ abstract class BaseViewModel<StateEvent, ViewState> : ViewModel()
         }
 
     fun setStateEvent(event: StateEvent){
+        Log.d(TAG, "setStateEvent: ")
         _stateEvent.value = event
     }
 

@@ -39,6 +39,8 @@ open class Event<out T>(private val content: T) {
 
     /**
      * Returns the content, even if it's already been handled.
+     * calling peekContent before getContentIfNotHandled will not mark it as it has been handled within the same object
+     * so event calling `getContentIfNotHandled` after peekContent is still not handled
      */
     fun peekContent(): T = content
 

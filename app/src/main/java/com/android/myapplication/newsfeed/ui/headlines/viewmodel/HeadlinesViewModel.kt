@@ -1,8 +1,12 @@
 package com.android.myapplication.newsfeed.ui.headlines.viewmodel
 
 import android.content.SharedPreferences
+import android.util.Log
+import androidx.lifecycle.LiveData
 import com.android.myapplication.newsfeed.repository.HeadlinesRepository
 import com.android.myapplication.newsfeed.ui.BaseViewModel
+import com.android.myapplication.newsfeed.ui.DataState
+import com.android.myapplication.newsfeed.ui.Loading
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesStateEvent
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesViewState
 import com.android.myapplication.newsfeed.util.AbsentLiveData
@@ -30,6 +34,7 @@ constructor(
 
     override fun handleStateEvent(stateEvent: HeadlinesStateEvent) = when (stateEvent) {
             is HeadlinesStateEvent.HeadlinesSearchEvent -> {
+                Log.d(TAG, "handleStateEvent: $stateEvent")
                  with(stateEvent,{
                     headlinesRepository.getTopHeadlines(
                         country,category,searchQuery,page
@@ -37,7 +42,13 @@ constructor(
                 })
             }
             is HeadlinesStateEvent.None -> {
-               AbsentLiveData.create()
+                Log.d(TAG, "handleStateEvent: None")
+                 object: LiveData<DataState<HeadlinesViewState>>(){
+                    override fun onActive() {
+                        super.onActive()
+                        value = DataState(null, Loading(false), null)
+                    }
+                }
             }
         }
 
@@ -48,6 +59,7 @@ constructor(
 
     override fun onCleared() {
         super.onCleared()
+        Log.d(TAG, "onCleared: ")
         cancelActiveJobs()
     }
 

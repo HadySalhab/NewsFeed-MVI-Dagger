@@ -43,6 +43,8 @@ abstract class BaseHeadlineFragment : DaggerFragment (){
 
     }
     fun cancelActiveJobs(){
+        //by cancelling active job, the StateEvent will be reset to None()
+        // and the DataState -> DataState(null, Loading(false), null)
         viewModel.cancelActiveJobs()
     }
 

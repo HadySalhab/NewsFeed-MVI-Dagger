@@ -148,7 +148,7 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
         dataState.error?.let { errorEvent ->
             //handle the error if not null
             //if the errorEvent hasNotBeenHandled, update the view state to update the ui, otherwise do nothing
-            errorEvent.getContentIfNotHandled()?.let{ stateError->
+            errorEvent.peekContent()?.let{ stateError->
                 Log.d(TAG, "HeadlineFragment: dataStateReturned: with error!=null, updating errorMsgScreen")
                 viewModel.updateViewState { headlinesFields->
                     headlinesFields.errorScreenMsg = stateError.response.message?:""
@@ -301,20 +301,6 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
             chip.apply{
                 text = category
                 tag = if(text.toString().equals(viewStateCategory,true)) viewStateCategory else category
-                setOnCheckedChangeListener{ buttonView: CompoundButton?, isChecked: Boolean ->
-
-                    Log.d(TAG, "initChipGroup: chip is selected")
-                    if(isChecked){
-                    viewModel.updateViewState { field->
-                        field.category = text.toString().toLowerCase()
-                        field.searchQuery = EMPTY_STRING
-                    }
-
-                    with(viewModel.getVSHeadlines()){
-                        viewModel.loadFirstPage(country,category)
-                    }
-                    }
-                }
             }
          }
         for (chip in children){
@@ -324,6 +310,16 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
             }
         }
 
+        chipGroup.setOnCheckedChangeListener { group, checkedId ->
+            Log.d(TAG, "initChipGroup: check")
+            viewModel.updateViewState { field->
+                field.category = group.findViewById<Chip>(checkedId).text.toString().toLowerCase()
+                field.searchQuery = EMPTY_STRING
+            }
+            with(viewModel.getVSHeadlines()){
+                viewModel.loadFirstPage(country,category)
+            }
+        }
 
 
 
