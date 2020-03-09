@@ -8,7 +8,7 @@ NewsFeed, provides live top and breaking headlines for a country, specific categ
 
 ## Screenshots
 
-![Headlines](https://user-images.githubusercontent.com/51857962/76163490-a20f7000-619a-11ea-8074-ab874c3cb92e.png) ![headline_dialog](https://user-images.githubusercontent.com/51857962/76163396-d6366100-6199-11ea-8f93-033010532e29.png) ![Sources](https://user-images.githubusercontent.com/51857962/75750506-75152480-5d78-11ea-9d6e-0f1e322a7d99.png)
+![Headlines](https://user-images.githubusercontent.com/51857962/76190533-52c84e80-6231-11ea-9793-3d5ae206ac74.png) ![headline_dialog](https://user-images.githubusercontent.com/51857962/76163396-d6366100-6199-11ea-8f93-033010532e29.png) ![Sources](https://user-images.githubusercontent.com/51857962/75750506-75152480-5d78-11ea-9d6e-0f1e322a7d99.png)
 
 
 ## API Key Note
