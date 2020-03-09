@@ -22,17 +22,17 @@
         app:layout_constraintHorizontal_bias="0">
 
         <com.google.android.material.chip.ChipGroup
-            android:id="@+id/region_list"
+            android:id="@+id/category_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:singleSelection="true"
+            app:selectionRequired="true"
             app:singleLine="true"
             android:padding="@dimen/medium_padding"/>
     </HorizontalScrollView>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_below="@id/chips"
-        android:layout_marginTop="@dimen/medium_margin"
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

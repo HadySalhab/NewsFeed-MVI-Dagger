@@ -8,10 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.EditText
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.TextView
+import android.widget.*
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +23,8 @@ import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesViewState
 import com.android.myapplication.newsfeed.ui.headlines.viewmodel.*
 import com.android.myapplication.newsfeed.util.SourcesCategoriesAndCountries
 import com.bumptech.glide.RequestManager
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import java.nio.channels.Pipe
 import javax.inject.Inject
 
@@ -39,6 +38,7 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
     private  var tv_error:TextView?=null
     private lateinit var searchView:androidx.appcompat.widget.SearchView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var chipGroup:ChipGroup
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,6 +49,7 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
         setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.fragment_headlines, container, false)
         recyclerView = view.findViewById(R.id.rv_headlines)
+        chipGroup = view.findViewById(R.id.category_list)
         tv_error = view.findViewById(R.id.tv_error)
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh)
         swipeRefreshLayout.setOnRefreshListener(this)
@@ -62,8 +63,10 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
             view,
             savedInstanceState
         ) //BaseHeadlineFragment implementation and Fragment()
+        initChipGroup()
         subscribeObservers()
         executeRequest()
+
     }
     private fun executeRequest() {
         // no point of firing the event everytime we rotate or change graph
@@ -286,6 +289,44 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
                 dialog.show()
             }
         }
+    }
+
+    private fun initChipGroup(){
+        val data = listOf<String>("General","Business","Entertainment","Health","Science","Sports","Technology")
+        val inflater = LayoutInflater.from(chipGroup.context)
+        val viewStateCategory = data.find { it.equals(viewModel.getVSHeadlines().category,true) }
+        Log.d(TAG, "initChipGroup: $viewStateCategory ")
+        val children = data.map { category->
+            val chip = inflater.inflate(R.layout.category,chipGroup,false) as Chip
+            chip.apply{
+                text = category
+                tag = if(text.toString().equals(viewStateCategory,true)) viewStateCategory else category
+                setOnCheckedChangeListener{ buttonView: CompoundButton?, isChecked: Boolean ->
+
+                    Log.d(TAG, "initChipGroup: chip is selected")
+                    if(isChecked){
+                    viewModel.updateViewState { field->
+                        field.category = text.toString().toLowerCase()
+                        field.searchQuery = EMPTY_STRING
+                    }
+
+                    with(viewModel.getVSHeadlines()){
+                        viewModel.loadFirstPage(country,category)
+                    }
+                    }
+                }
+            }
+         }
+        for (chip in children){
+            chipGroup.addView(chip)
+            if(chip.tag.equals(viewStateCategory)){
+                chipGroup.check(chip.id)
+            }
+        }
+
+
+
+
     }
 
     override fun onPause() {

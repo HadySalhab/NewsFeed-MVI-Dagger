@@ -1,15 +1,14 @@
 package com.android.myapplication.newsfeed.ui.headlines.viewmodel
 
 import android.content.SharedPreferences
-import androidx.lifecycle.LiveData
 import com.android.myapplication.newsfeed.repository.HeadlinesRepository
 import com.android.myapplication.newsfeed.ui.BaseViewModel
-import com.android.myapplication.newsfeed.ui.DataState
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesStateEvent
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesViewState
-import com.android.myapplication.newsfeed.util.*
-import com.android.myapplication.newsfeed.util.PreferenceUtil.Companion.ARTICLE_CATEGORY_KEY
-import com.android.myapplication.newsfeed.util.PreferenceUtil.Companion.ARTICLE_COUNTRY_KEY
+import com.android.myapplication.newsfeed.util.AbsentLiveData
+import com.android.myapplication.newsfeed.util.getCategory
+import com.android.myapplication.newsfeed.util.getCountry
+import com.android.myapplication.newsfeed.util.saveCountryAndCategory
 import javax.inject.Inject
 
 
