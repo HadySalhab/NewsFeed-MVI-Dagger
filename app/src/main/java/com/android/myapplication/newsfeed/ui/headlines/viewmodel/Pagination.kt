@@ -3,6 +3,7 @@ package com.android.myapplication.newsfeed.ui.headlines.viewmodel
 import android.util.Log
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesStateEvent
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesViewState
+import com.android.myapplication.newsfeed.util.TAG
 
 const val EMPTY_STRING = ""
 //country and category can be passed at runtime

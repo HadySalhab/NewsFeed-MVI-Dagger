@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.android.myapplication.newsfeed.R
 import com.android.myapplication.newsfeed.models.Source
-import com.android.myapplication.newsfeed.util.SourcesCategoriesAndCountries
+import com.android.myapplication.newsfeed.util.GENERAL
 
 /**
  * A simple [Fragment] subclass.
@@ -18,7 +18,7 @@ class GeneralFragment : BaseCategoriesFragment() {
     override fun findRV(view:View): RecyclerView = view.findViewById(R.id.rv_general)
 
     override fun filterSourceList(sourceList: List<Source>): List<Source>  = sourceList.filter { source ->
-        source.category.equals(SourcesCategoriesAndCountries.GENERAL)
+        source.category.equals(GENERAL)
     }
 
 

@@ -1,6 +1,7 @@
 package com.android.myapplication.newsfeed.repository
 
 import android.util.Log
+import com.android.myapplication.newsfeed.util.TAG
 import kotlinx.coroutines.Job
 
 /*
@@ -9,9 +10,6 @@ import kotlinx.coroutines.Job
 open class JobManager(
     private val className: String
 ) {
-
-    private val TAG: String = "AppDebug"
-
     private val jobs: HashMap<String, Job> = HashMap()
 
     fun addJob(methodName: String, job: Job){

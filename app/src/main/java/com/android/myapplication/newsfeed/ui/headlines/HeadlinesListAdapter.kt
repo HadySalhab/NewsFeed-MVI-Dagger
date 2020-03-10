@@ -19,7 +19,6 @@ class HeadlinesListAdapter(
     private val requestManager: RequestManager
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val TAG: String = "AppDebug"
     //identifier of no more result article
     private val NO_MORE_RESULTS = -1
     //Identifier of a default article
@@ -43,21 +42,18 @@ class HeadlinesListAdapter(
     internal inner class HeadlinesRVChangeCallback(
         private val adapter: HeadlinesListAdapter
     ) : ListUpdateCallback {
-        override fun onChanged(position: Int, count: Int, payload: Any?) {
-            adapter.notifyItemRangeChanged(position, count, payload) //default
-        }
+        override fun onChanged(position: Int, count: Int, payload: Any?)
+                = adapter.notifyItemRangeChanged(position, count, payload) //default
 
-        override fun onMoved(fromPosition: Int, toPosition: Int) {
-            adapter.notifyDataSetChanged() //reset completely
-        }
 
-        override fun onInserted(position: Int, count: Int) {
-            adapter.notifyItemRangeChanged(position, count) //default
-        }
+        override fun onMoved(fromPosition: Int, toPosition: Int) = adapter.notifyDataSetChanged() //reset completely
 
-        override fun onRemoved(position: Int, count: Int) {
-            adapter.notifyDataSetChanged() //reset the list completely
-        }
+
+        override fun onInserted(position: Int, count: Int) = adapter.notifyItemRangeChanged(position, count) //default
+
+
+        override fun onRemoved(position: Int, count: Int) = adapter.notifyDataSetChanged() //reset the list completely
+
 
     }
 
@@ -69,17 +65,25 @@ class HeadlinesListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return   when(viewType){
-            NO_MORE_RESULTS -> {
-               GenericViewHolder(
+            NO_MORE_RESULTS -> GenericViewHolder(
                     LayoutInflater.from(parent.context).inflate(
                         R.layout.layout_no_more_results,
                         parent,
                         false
                     )
                 )
-            }
-            HEADLINE_ITEM->{
-                HeadlinesViewHolder(
+
+            HEADLINE_ITEM-> HeadlinesViewHolder(
+                    LayoutInflater.from(parent.context).inflate(
+                        R.layout.layout_headlines_list_item,
+                        parent,
+                        false
+                    ),
+                    requestManager,
+                    interaction
+                )
+
+            else-> HeadlinesViewHolder(
                     LayoutInflater.from(parent.context).inflate(
                         R.layout.layout_headlines_list_item,
                         parent,
@@ -89,18 +93,7 @@ class HeadlinesListAdapter(
                     interaction
                 )
             }
-            else->{
-                HeadlinesViewHolder(
-                    LayoutInflater.from(parent.context).inflate(
-                        R.layout.layout_headlines_list_item,
-                        parent,
-                        false
-                    ),
-                    requestManager,
-                    interaction
-                )
-            }
-        }
+
 
 
     }
@@ -113,17 +106,14 @@ class HeadlinesListAdapter(
         }
     }
 
-    override fun getItemCount(): Int {
-        return differ.currentList.size
-    }
+    override fun getItemCount() = differ.currentList.size
 
-    override fun getItemViewType(position: Int): Int {
-        //if the id of the last article is greater than -1, means its a normal article
-        //otherwise its a no more result article
-        if(differ.currentList[position].id > -1){
-            return HEADLINE_ITEM
-        }
-        return NO_MORE_RESULTS
+    //if the id of the last article is greater than -1, means its a normal article
+    //otherwise its a no more result article
+    override fun getItemViewType(position: Int) = if(differ.currentList[position].id > -1){
+           HEADLINE_ITEM
+        } else {
+       NO_MORE_RESULTS
     }
 
     fun submitList(list: List<Article>?, isQueryExhausted:Boolean) {

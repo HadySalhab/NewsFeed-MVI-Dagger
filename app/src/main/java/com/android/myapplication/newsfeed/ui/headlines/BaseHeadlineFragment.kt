@@ -26,7 +26,7 @@ abstract class BaseHeadlineFragment : DaggerFragment (){
 
     lateinit var viewModel: HeadlinesViewModel
 
-    lateinit var stateChangeListener: DataStateChangeListener
+     var stateChangeListener: DataStateChangeListener?=null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -42,20 +42,17 @@ abstract class BaseHeadlineFragment : DaggerFragment (){
         cancelActiveJobs()
 
     }
-    fun cancelActiveJobs(){
-        //by cancelling active job, the StateEvent will be reset to None()
-        // and the DataState -> DataState(null, Loading(false), null)
-        viewModel.cancelActiveJobs()
-    }
 
-    fun setupActionBarWithNavController(fragmentId:Int,activity: AppCompatActivity){
-        val appBarConfiguration = AppBarConfiguration(setOf(fragmentId))
-        NavigationUI.setupActionBarWithNavController(
+    //by cancelling active job, the StateEvent will be reset to None()
+    // and the DataState -> DataState(null, Loading(false), null)
+    fun cancelActiveJobs()= viewModel.cancelActiveJobs()
+
+
+    fun setupActionBarWithNavController(fragmentId:Int,activity: AppCompatActivity) = NavigationUI.setupActionBarWithNavController(
             activity,
             findNavController(),
-            appBarConfiguration
+            AppBarConfiguration(setOf(fragmentId))
         )
-    }
     //getting the activity
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -64,5 +61,10 @@ abstract class BaseHeadlineFragment : DaggerFragment (){
         }catch(e: ClassCastException){
             Log.e(TAG, "$context must implement DataStateChangeListener" )
         }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        stateChangeListener = null
     }
 }

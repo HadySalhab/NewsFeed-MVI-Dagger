@@ -15,21 +15,17 @@ class SourceListAdapter(private val interaction: Interaction? = null) :
 
     val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Source>() {
 
-        override fun areItemsTheSame(oldItem: Source, newItem: Source): Boolean {
-            return oldItem.id == newItem.id
-        }
+        override fun areItemsTheSame(oldItem: Source, newItem: Source)= oldItem.id == newItem.id
 
-        override fun areContentsTheSame(oldItem: Source, newItem: Source): Boolean {
-            return oldItem == newItem
-        }
+
+        override fun areContentsTheSame(oldItem: Source, newItem: Source)= oldItem == newItem
+
 
     }
     private val differ = AsyncListDiffer(this, DIFF_CALLBACK)
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-
-        return SourceViewHodel(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = SourceViewHodel(
             LayoutInflater.from(parent.context).inflate(
                 R.layout.layout_sources_list_item,
                 parent,
@@ -37,7 +33,7 @@ class SourceListAdapter(private val interaction: Interaction? = null) :
             ),
             interaction
         )
-    }
+
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
@@ -47,13 +43,11 @@ class SourceListAdapter(private val interaction: Interaction? = null) :
         }
     }
 
-    override fun getItemCount(): Int {
-        return differ.currentList.size
-    }
+    override fun getItemCount()= differ.currentList.size
 
-    fun submitList(list: List<Source>) {
-        differ.submitList(list)
-    }
+
+    fun submitList(list: List<Source>) = differ.submitList(list)
+
 
     class SourceViewHodel
     constructor(

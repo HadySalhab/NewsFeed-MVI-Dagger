@@ -58,13 +58,17 @@ class SourcesFragment : BaseSourcesFragment() {
                     it.data?.let { eventViewState->
                         eventViewState.getContentIfNotHandled()?.let { networkViewState->
                             Log.d(TAG, "SourcesFragment: dataStateReturned: with data!=null")
-                            viewModel.setSourceListData(networkViewState.sourcesField.sourceList)
+                            viewModel.updateSourceViewState { sourcesField ->
+                                sourcesField.sourceList = networkViewState.sourcesField.sourceList
+                            }
                         }
                     }
                 }
                 it.error?.let{ errorEvent->
                     errorEvent.getContentIfNotHandled()?.let { stateError ->
-                        viewModel.setErrorScreenMsg(stateError.response.message?:"")
+                        viewModel.updateSourceViewState { sourcesField ->
+                            sourcesField.errorScreenMsg = stateError.response.message?:""
+                        }
                     }
                 }
             }

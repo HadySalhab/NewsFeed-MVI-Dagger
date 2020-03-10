@@ -4,8 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import com.android.myapplication.newsfeed.R
-import com.android.myapplication.newsfeed.util.Constants
-import com.android.myapplication.newsfeed.util.PreferenceUtil
+import com.android.myapplication.newsfeed.util.APP_PREFERENCES
+import com.android.myapplication.newsfeed.util.BASE_URL
 import com.android.myapplication.popularmovies.util.LiveDataCallAdapterFactory
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
@@ -22,39 +22,34 @@ class AppModule{
 
     @Singleton
     @Provides
-    fun provideSharedPreferences(application: Application): SharedPreferences {
-        return application.getSharedPreferences(PreferenceUtil.APP_PREFERENCES, Context.MODE_PRIVATE)
-    }
+    fun provideSharedPreferences(application: Application) = application.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
+
 
     @Singleton
     @Provides
-    fun provideSharedPrefsEditor(sharedPreferences: SharedPreferences): SharedPreferences.Editor {
-        return sharedPreferences.edit()
-    }
+    fun provideSharedPrefsEditor(sharedPreferences: SharedPreferences) = sharedPreferences.edit()
+
 
     @Singleton
     @Provides
-    fun provideRequestOptions(): RequestOptions {
-        return RequestOptions
+    fun provideRequestOptions()= RequestOptions
             .placeholderOf(R.drawable.default_image)
             .error(R.drawable.default_image)
-    }
+
 
     @Singleton
     @Provides
-    fun provideGlideInstance(application: Application, requestOptions: RequestOptions): RequestManager {
-        return Glide.with(application)
+    fun provideGlideInstance(application: Application, requestOptions: RequestOptions) = Glide.with(application)
             .setDefaultRequestOptions(requestOptions)
-    }
+
 
     @Singleton
     @Provides
-    fun provideRetrofitBuilder(): Retrofit.Builder{
-        return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+    fun provideRetrofitBuilder()=Retrofit.Builder()
+            .baseUrl(BASE_URL)
             .addCallAdapterFactory(LiveDataCallAdapterFactory())
             .addConverterFactory(GsonConverterFactory.create())
-    }
+
 
 
 }

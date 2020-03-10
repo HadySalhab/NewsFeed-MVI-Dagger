@@ -7,13 +7,13 @@ data class StateError(val response: Response)
 
 
 data class Response(val message: String?, val responseType: ResponseType)
-sealed class ResponseType{
+sealed class ResponseType {
 
-    class Toast: ResponseType()
+    class Toast : ResponseType()
 
-    class Dialog: ResponseType()
+    class Dialog : ResponseType()
 
-    class None: ResponseType()
+    class None : ResponseType()
 }
 
 
@@ -28,14 +28,13 @@ open class Event<out T>(private val content: T) {
     /**
      * Returns the content and prevents its use again,WITHIN THE SAME OBJECT.
      */
-    fun getContentIfNotHandled(): T? {
-        return if (hasBeenHandled) {
-            null
-        } else {
-            hasBeenHandled = true
-            content
-        }
+    fun getContentIfNotHandled() = if (hasBeenHandled) {
+        null
+    } else {
+        hasBeenHandled = true
+        content
     }
+
 
     /**
      * Returns the content, even if it's already been handled.
@@ -44,29 +43,15 @@ open class Event<out T>(private val content: T) {
      */
     fun peekContent(): T = content
 
-    override fun toString(): String {
-        return "Event(content=$content, hasBeenHandled=$hasBeenHandled)"
-    }
+    override fun toString() = "Event(content=$content, hasBeenHandled=$hasBeenHandled)"
 
-    companion object{
 
-        private val TAG: String = "AppDebug"
-
+    companion object {
         // we don't want an event if the data is null
-        fun <T> dataEvent(data: T?): Event<T>?{
-            data?.let {
-                return Event(it)
-            }
-            return null
-        }
+        fun <T> dataEvent(data: T?)= if(data!=null) Event(data) else null
 
         // we don't want an event if the response is null
-        fun responseEvent(response: Response?): Event<Response>?{
-            response?.let{
-                return Event(response)
-            }
-            return null
-        }
+        fun responseEvent(response: Response?) = if (response != null) Event(response) else null
     }
 
 

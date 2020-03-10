@@ -31,7 +31,6 @@ class BottomNavController(
     * */
 ) {
 
-    private val TAG: String = "AppDebug"
     lateinit var activity: Activity
     lateinit var fragmentManager: FragmentManager
     lateinit var navItemChangeListener: OnNavigationItemChanged
@@ -79,14 +78,15 @@ class BottomNavController(
             navigationBackStack.size > 1 -> {
                 //Remove last item from backStack
                 navigationBackStack.removeLast()
-
                 onNavigationItemSelected()
             }
             //If the stack has only one and it's not the navigation home we
             //should ensure that the app always leave from start destination
             navigationBackStack.last() != appStartDestinationId -> {
-                navigationBackStack.removeLast()
-                navigationBackStack.add(0,appStartDestinationId)
+                navigationBackStack.run {
+                    removeLast()
+                    add(0,appStartDestinationId)
+                }
                 onNavigationItemSelected()
             }
             else-> activity.finish()
@@ -94,11 +94,7 @@ class BottomNavController(
     }
     private class BackStack : ArrayList<Int>() {
         companion object {
-            fun of(vararg elements: Int): BackStack {
-                val b = BackStack()
-                b.addAll(elements.toTypedArray())
-                return b
-            }
+            fun of(vararg elements: Int) = BackStack().apply { addAll(elements.toTypedArray()) }
         }
 
         fun removeLast() = removeAt(size - 1)

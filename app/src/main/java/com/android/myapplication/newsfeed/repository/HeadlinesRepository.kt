@@ -1,8 +1,10 @@
 package com.android.myapplication.newsfeed.repository
 
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
+import com.android.myapplication.newsfeed.BaseApplication
 import com.android.myapplication.newsfeed.api.NewsApi
 import com.android.myapplication.newsfeed.api.data.ArticleNetwork
 import com.android.myapplication.newsfeed.api.responses.HeadlinesResponse
@@ -14,7 +16,7 @@ import com.android.myapplication.newsfeed.ui.DataState
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesViewState
 import com.android.myapplication.newsfeed.util.ApiSuccessResponse
 import com.android.myapplication.newsfeed.util.GenericApiResponse
-import com.android.myapplication.newsfeed.util.NetworkUtil
+import com.android.myapplication.newsfeed.util.isNetworkAvailable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
@@ -26,7 +28,7 @@ class HeadlinesRepository
 constructor(
     val newsApi: NewsApi,
     val articlesDao: ArticlesDao,
-    val networkUtil: NetworkUtil
+    val app: Application
 ) : JobManager("HeadlinesRepository") {
     private val TAG: String = "AppDebug"
 
@@ -38,16 +40,13 @@ constructor(
     ): LiveData<DataState<HeadlinesViewState>> {
         return object :
             NetworkBoundResource<HeadlinesResponse, List<ArticleDb>, HeadlinesViewState>(
-                networkUtil.isConnectedToTheInternet(),
+                app.isNetworkAvailable(),
                 true
             ) {
-            override fun setJob(job: Job) {
-                addJob("getTopHeadlines", job)
-            }
+            override fun setJob(job: Job) = addJob("getTopHeadlines", job)
 
-            override suspend fun createCacheRequestAndReturn() {
-                //NADA
-            }
+
+            override suspend fun createCacheRequestAndReturn(){}
 
             override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<HeadlinesResponse>) {
 
@@ -85,13 +84,11 @@ constructor(
 
             }
 
-            override fun createCall(): LiveData<GenericApiResponse<HeadlinesResponse>> {
-                return newsApi.getTopHeadlines(country,category,page,searchQuery)
-            }
+            override fun createCall() = newsApi.getTopHeadlines(country,category,page,searchQuery)
 
-            override fun loadFromCache(): List<ArticleDb>? {
-                return articlesDao.getAllArticles()
-            }
+
+            override fun loadFromCache()= articlesDao.getAllArticles()
+
 
         }.asLiveData()
 

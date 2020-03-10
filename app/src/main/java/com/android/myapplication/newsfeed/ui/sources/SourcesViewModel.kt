@@ -20,38 +20,24 @@ constructor(
 
 
 
-    override fun handleStateEvent(stateEvent: SourcesStateEvent): LiveData<DataState<SourcesViewState>> {
-        when (stateEvent) {
+    override fun handleStateEvent(stateEvent: SourcesStateEvent)=  when (stateEvent) {
             is SourcesStateEvent.SourcesSearchEvent -> {
-                return sourcesRepository.getSources()
+                 sourcesRepository.getSources()
             }
             is SourcesStateEvent.None -> {
-                return AbsentLiveData.create()
+                 AbsentLiveData.create()
             }
         }
-    }
-
-    override fun initNewViewState(): SourcesViewState {
-       return SourcesViewState()
-    }
 
 
+    override fun initNewViewState() = SourcesViewState()
 
-    fun setErrorScreenMsg(errorScreenMsg:String){
-        val update = getCurrentViewStateOrNew()
-        if (errorScreenMsg.equals(update.sourcesField.errorScreenMsg)) {
-            return
+
+    fun updateSourceViewState(operation:(SourcesViewState.SourcesField)->Unit)= with(getCurrentViewStateOrNew()){
+            operation(sourcesField)
+            setViewState(this)
         }
-        update.sourcesField.errorScreenMsg = errorScreenMsg
-        _viewState.value = update
-    }
 
-    fun setSourceListData(sourcesList: List<Source>) {
-        val update = getCurrentViewStateOrNew()
-        //we are not checking if it's the same list being passed, because RecycleView DiffUtil will take care of it
-        update.sourcesField.sourceList = sourcesList
-        _viewState.value = update
-    }
 
     fun cancelActiveJobs() {
         sourcesRepository.cancelActiveJobs() //repository extends JobManager, cancelActiveJobs is part of the job Manager
@@ -59,9 +45,8 @@ constructor(
     }
 
 
-    private fun handlePendingData() {
-        setStateEvent(SourcesStateEvent.None())
-    }
+    private fun handlePendingData() = setStateEvent(SourcesStateEvent.None())
+
 
     override fun onCleared() {
         super.onCleared()

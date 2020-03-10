@@ -18,14 +18,12 @@ abstract class BaseFavoritesFragment : DaggerFragment (){
 
     }
 
-    fun setupActionBarWithNavController(fragmentId:Int,activity: AppCompatActivity){
-        val appBarConfiguration = AppBarConfiguration(setOf(fragmentId))
-        NavigationUI.setupActionBarWithNavController(
+    fun setupActionBarWithNavController(fragmentId:Int,activity: AppCompatActivity) = NavigationUI.setupActionBarWithNavController(
             activity,
             findNavController(),
-            appBarConfiguration
+            AppBarConfiguration(setOf(fragmentId))
         )
-    }
+
     fun cancelActiveJobs(){
         //viewModel.cancelActiveJobs()
     }

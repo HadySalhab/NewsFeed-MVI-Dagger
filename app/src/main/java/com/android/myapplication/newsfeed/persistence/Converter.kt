@@ -5,24 +5,20 @@ import com.android.myapplication.newsfeed.models.Source
 import com.google.gson.Gson
 
 class Converter {
-        @TypeConverter
-        fun toSource(sourceString: String?): Source? {
-            if (sourceString == null) {
-                return null
-            }
-            val gson = Gson()
-            return gson.fromJson(sourceString, Source::class.java)
-        }
+    @TypeConverter
+    fun toSource(sourceString: String?) = if (sourceString == null) {
+        null
+    } else {
+        val gson = Gson()
+        gson.fromJson(sourceString, Source::class.java)
+    }
 
-        @TypeConverter
-        fun toSourceString(source: Source?): String? {
-            if(source==null){
-                return null
-            }
-            val gson = Gson()
-            return gson.toJson(source,String::class.java)
-
-        }
-
+    @TypeConverter
+    fun toSourceString(source: Source?) = if (source == null) {
+        null
+    } else {
+        val gson = Gson()
+        gson.toJson(source, String::class.java)
+    }
 
 }

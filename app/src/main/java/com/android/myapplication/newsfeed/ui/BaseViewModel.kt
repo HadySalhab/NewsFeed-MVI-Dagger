@@ -5,12 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import com.android.myapplication.newsfeed.util.TAG
 
 
 abstract class BaseViewModel<StateEvent, ViewState> : ViewModel()
 {
 
-    val TAG: String = "AppDebug"
 
     protected val _stateEvent: MutableLiveData<StateEvent> = MutableLiveData()
     protected val _viewState: MutableLiveData<ViewState> = MutableLiveData()
@@ -36,12 +36,8 @@ abstract class BaseViewModel<StateEvent, ViewState> : ViewModel()
     }
 
     //create newView state or get the existing one
-    fun getCurrentViewStateOrNew(): ViewState{
-        val value = viewState.value?.let{
-            it
-        }?: initNewViewState()
-        return value
-    }
+    fun getCurrentViewStateOrNew() = viewState.value?.let{ it } ?: initNewViewState()
+
 
     fun setViewState(viewState:ViewState){
         _viewState.value = viewState

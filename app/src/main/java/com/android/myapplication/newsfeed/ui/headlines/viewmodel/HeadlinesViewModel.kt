@@ -9,10 +9,7 @@ import com.android.myapplication.newsfeed.ui.DataState
 import com.android.myapplication.newsfeed.ui.Loading
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesStateEvent
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesViewState
-import com.android.myapplication.newsfeed.util.AbsentLiveData
-import com.android.myapplication.newsfeed.util.getCategory
-import com.android.myapplication.newsfeed.util.getCountry
-import com.android.myapplication.newsfeed.util.saveCountryAndCategory
+import com.android.myapplication.newsfeed.util.*
 import javax.inject.Inject
 
 
@@ -63,8 +60,15 @@ constructor(
         cancelActiveJobs()
     }
 
-    fun saveCategoryAndCountry(country:String,category:String){
-        editor.saveCountryAndCategory(country,category)
-    }
+    fun saveCategoryAndCountry(country:String,category:String) = editor.saveCountryAndCategory(country,category)
+
+
+    fun getVSHeadlines() = getCurrentViewStateOrNew().headlinesFields
+    fun updateViewState(operation:(HeadlinesViewState.HeadlineFields)->Unit) = with(getCurrentViewStateOrNew()){
+            operation(headlinesFields)
+            setViewState(this)
+        }
+
+
 
 }

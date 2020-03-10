@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 import com.android.myapplication.newsfeed.R
 import com.android.myapplication.newsfeed.models.Source
-import com.android.myapplication.newsfeed.util.SourcesCategoriesAndCountries
+import com.android.myapplication.newsfeed.util.HEALTH
 
 /**
  * A simple [Fragment] subclass.
@@ -20,6 +20,6 @@ class HealthFragment : BaseCategoriesFragment() {
     override fun findRV(view:View): RecyclerView = view.findViewById(R.id.rv_health)
 
     override fun filterSourceList(sourceList: List<Source>): List<Source>  = sourceList.filter { source ->
-        source.category.equals(SourcesCategoriesAndCountries.HEALTH)
+        source.category.equals(HEALTH)
     }
 }

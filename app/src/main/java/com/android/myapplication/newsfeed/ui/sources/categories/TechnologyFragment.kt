@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 import com.android.myapplication.newsfeed.R
 import com.android.myapplication.newsfeed.models.Source
-import com.android.myapplication.newsfeed.util.SourcesCategoriesAndCountries
+import com.android.myapplication.newsfeed.util.TECHNOLOGY
 
 /**
  * A simple [Fragment] subclass.
@@ -21,6 +21,6 @@ class TechnologyFragment : BaseCategoriesFragment() {
     override fun findRV(view:View): RecyclerView = view.findViewById(R.id.rv_technology)
 
     override fun filterSourceList(sourceList: List<Source>): List<Source>  = sourceList.filter { source ->
-        source.category.equals(SourcesCategoriesAndCountries.TECHNOLOGY)
+        source.category.equals(TECHNOLOGY)
     }
 }

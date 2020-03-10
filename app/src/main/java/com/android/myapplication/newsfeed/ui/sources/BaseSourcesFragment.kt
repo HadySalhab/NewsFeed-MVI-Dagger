@@ -18,7 +18,7 @@ import javax.inject.Inject
 abstract class BaseSourcesFragment : BaseCategoriesSourcesFragment (){
 
 
-    lateinit var stateChangeListener: DataStateChangeListener
+     var stateChangeListener: DataStateChangeListener?=null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -26,17 +26,14 @@ abstract class BaseSourcesFragment : BaseCategoriesSourcesFragment (){
         cancelActiveJobs()
     }
 
-    fun setupActionBarWithNavController(fragmentId:Int,activity:AppCompatActivity){
-        val appBarConfiguration = AppBarConfiguration(setOf(fragmentId))
-        NavigationUI.setupActionBarWithNavController(
+    fun setupActionBarWithNavController(fragmentId:Int,activity:AppCompatActivity) =NavigationUI.setupActionBarWithNavController(
             activity,
             findNavController(),
-            appBarConfiguration
+            AppBarConfiguration(setOf(fragmentId))
         )
-    }
-    fun cancelActiveJobs(){
-        viewModel.cancelActiveJobs()
-    }
+
+    fun cancelActiveJobs() = viewModel.cancelActiveJobs()
+
     //getting the activity
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -45,5 +42,10 @@ abstract class BaseSourcesFragment : BaseCategoriesSourcesFragment (){
         }catch(e: ClassCastException){
             Log.e(TAG, "$context must implement DataStateChangeListener" )
         }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        stateChangeListener = null
     }
 }

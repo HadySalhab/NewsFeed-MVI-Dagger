@@ -1,21 +1,20 @@
 package com.android.myapplication.newsfeed.repository
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
+import com.android.myapplication.newsfeed.BaseApplication
 import com.android.myapplication.newsfeed.api.NewsApi
-import com.android.myapplication.newsfeed.api.data.ArticleNetwork
 import com.android.myapplication.newsfeed.api.data.SourceNetwork
 import com.android.myapplication.newsfeed.api.responses.SourcesResponse
 import com.android.myapplication.newsfeed.di.main.MainScope
-import com.android.myapplication.newsfeed.models.Article
 import com.android.myapplication.newsfeed.models.Source
-import com.android.myapplication.newsfeed.persistence.ArticleDb
 import com.android.myapplication.newsfeed.ui.DataState
-import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesViewState
 import com.android.myapplication.newsfeed.ui.sources.state.SourcesViewState
 import com.android.myapplication.newsfeed.util.ApiSuccessResponse
 import com.android.myapplication.newsfeed.util.GenericApiResponse
-import com.android.myapplication.newsfeed.util.NetworkUtil
+import com.android.myapplication.newsfeed.util.TAG
+import com.android.myapplication.newsfeed.util.isNetworkAvailable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
@@ -26,18 +25,16 @@ class SourceRepository
 @Inject
 constructor(
     val newsApi: NewsApi,
-    val networkUtil: NetworkUtil
+    val app: Application
 ): JobManager("SourceRepository") {
-    private val TAG: String = "AppDebug"
     fun getSources(): LiveData<DataState<SourcesViewState>> {
         Log.d(TAG, "SourceRepository: getSources() is called ")
         return object : NetworkBoundResource<SourcesResponse, Void, SourcesViewState>(
-            networkUtil.isConnectedToTheInternet(),
+            app.isNetworkAvailable(),
             true
         ) {
-            override fun setJob(job: Job) {
-                addJob("getSources", job)
-            }
+            override fun setJob(job: Job) = addJob("getSources", job)
+
 
             override suspend fun createCacheRequestAndReturn() {
                 //N/A
@@ -77,14 +74,11 @@ constructor(
 
             }
 
-            override fun createCall(): LiveData<GenericApiResponse<SourcesResponse>> {
-                Log.d(TAG, "SourceRepository : createCall: ")
-                return newsApi.getSources()
-            }
+            override fun createCall(): LiveData<GenericApiResponse<SourcesResponse>> = newsApi.getSources()
 
-            override fun loadFromCache(): Void? {
-                return null
-            }
+
+            override fun loadFromCache()=null
+
 
         }.asLiveData()
     }

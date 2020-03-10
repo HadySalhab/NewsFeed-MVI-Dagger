@@ -58,18 +58,17 @@ class MainActivity : BaseActivity(),
         }
     }
 
-    private fun setupActionBar(){
-        setSupportActionBar(toolbar)
-    }
+    private fun setupActionBar() = setSupportActionBar(toolbar)
 
-    override fun displayProgressBar(bool: Boolean) {
+
+    override fun displayProgressBar(bool: Boolean) =
         if(bool){
             progress_bar.visibility = View.VISIBLE
         }
         else{
             progress_bar.visibility = View.GONE
         }
-    }
+
 
     override fun onBackPressed() = bottomNavController.onBackPressed()
 
@@ -122,7 +121,6 @@ class MainActivity : BaseActivity(),
         }
     }
 
-    override fun expandAppBar() {
-        findViewById<AppBarLayout>(R.id.appbar_layout).setExpanded(true)
-    }
+    override fun expandAppBar() = findViewById<AppBarLayout>(R.id.appbar_layout).setExpanded(true)
+
 }

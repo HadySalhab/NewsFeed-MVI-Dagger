@@ -3,32 +3,41 @@ package com.android.myapplication.newsfeed.ui
 import android.content.Context
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
+import com.android.myapplication.newsfeed.util.TAG
+import com.android.myapplication.newsfeed.util.displayErrorDialog
+import com.android.myapplication.newsfeed.util.displayToast
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 abstract class BaseActivity:DaggerAppCompatActivity(),DataStateChangeListener{
-    val TAG: String = "AppDebug"
     //When dataState is changed, we BaseActivity handles:
     //loading state, error state, *response* of data(success) state
     //data of data is handled in the activity/fragment itself
     override fun onDataStateChange(dataState: DataState<*>?) {
-        dataState?.let{
+        dataState?.run{
             GlobalScope.launch(Dispatchers.Main){
                 //displayProgressBar if loading
-                displayProgressBar(it.loading.isLoading)
+                displayProgressBar(loading.isLoading)
 
-                it.error?.let { errorEvent ->
+                error?.run {
                     //handle the error if not null
-                    handleStateError(errorEvent)
+                     getContentIfNotHandled()?.run {
+                        with(response){
+                            handleStateResponseType(responseType,message)
+                        }
+                    }
+
                 }
 
                 //handle data if not null
-                it.data?.let {
+                data?.run {
                     //handle response data if not null
-                    it.response?.let { responseEvent ->
-                        handleStateResponse(responseEvent)
+                      response?.run {
+                        getContentIfNotHandled()?.run {
+                            handleStateResponseType(responseType,message)
+                        }
                     }
                 }
             }
@@ -37,53 +46,28 @@ abstract class BaseActivity:DaggerAppCompatActivity(),DataStateChangeListener{
 
     abstract fun displayProgressBar(bool: Boolean) //we need access to the progress_Bar
 
-    private fun handleStateResponse(event: Event<Response>){
-        event.getContentIfNotHandled()?.let{
-
-            when(it.responseType){
-                is ResponseType.Toast ->{
-                    it.message?.let{message ->
-                        displayToast(message)
-                    }
-                }
-
-                is ResponseType.Dialog ->{
-                    it.message?.let{ message ->
-                        displaySuccessDialog(message)
-                    }
-                }
-
-                is ResponseType.None -> {
-                    Log.i(TAG, "handleStateResponse: ${it.message}")
+    private fun handleStateResponseType(responseType: ResponseType,message:String?){
+        when(responseType){
+            is ResponseType.Toast ->{
+             message?.run{
+                    displayToast(this)
                 }
             }
 
-        }
-    }
-    private fun handleStateError(event: Event<StateError>){
-        event.getContentIfNotHandled()?.let{
-            when(it.response.responseType){
-                is ResponseType.Toast ->{
-                    it.response.message?.let{message ->
-                        displayToast(message)
-                    }
+            is ResponseType.Dialog ->{
+                    message?.run{
+                    displayErrorDialog(this)
                 }
+            }
 
-                is ResponseType.Dialog ->{
-                    it.response.message?.let{ message ->
-                        displayErrorDialog(message)
-                    }
-                }
-
-                is ResponseType.None -> {
-                    Log.i(TAG, "handleStateError: ${it.response.message}")
-                }
+            is ResponseType.None -> {
+                Log.i(TAG, "handleStateError: $message")
             }
         }
     }
 
     override fun hideSoftKeyboard() {
-        if (currentFocus != null) {
+        currentFocus?.let {
             val inputMethodManager = getSystemService(
                 Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager
