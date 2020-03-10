@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.*
 import com.android.myapplication.newsfeed.R
 import com.android.myapplication.newsfeed.models.Article
 import com.android.myapplication.newsfeed.util.GenericViewHolder
+import com.android.myapplication.newsfeed.util.formatStringDate
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import kotlinx.android.synthetic.main.layout_headlines_list_item.view.*
@@ -153,7 +154,7 @@ class HeadlinesListAdapter(
                 .into(itemView.iv_article_image)
             itemView.apply {
                 tv_article_author.text = item.author
-                tv_article_date.text = com.android.myapplication.newsfeed.util.DateUtils.formatDate(item.publishDate)
+                tv_article_date.text = item.publishDate?.formatStringDate()
                 tv_article_description.text = item.description
                 tv_article_title.text =item.title
                 tv_article_source_name.text = item.source?.name
