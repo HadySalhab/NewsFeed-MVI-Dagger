@@ -5,8 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.myapplication.newsfeed.R
+import com.android.myapplication.newsfeed.ui.BaseFragment
 
-class FavoritesFragment : BaseFavoritesFragment (){
+class FavoritesFragment : BaseFragment(){
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -23,4 +24,10 @@ class FavoritesFragment : BaseFavoritesFragment (){
 
 
     }
+
+    override fun getFragmentId(): Int = R.id.favoritesFragment
+    override fun cancelActiveJobs() {
+    }
+
+
 }

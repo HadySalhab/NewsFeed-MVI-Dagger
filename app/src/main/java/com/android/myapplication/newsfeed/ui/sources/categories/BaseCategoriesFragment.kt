@@ -6,16 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.android.myapplication.newsfeed.R
 import com.android.myapplication.newsfeed.models.Source
-import com.android.myapplication.newsfeed.ui.sources.BaseCategoriesSourcesFragment
+import com.android.myapplication.newsfeed.ui.sources.SourcesViewModel
+import com.android.myapplication.newsfeed.util.TAG
+import com.android.myapplication.newsfeed.viewmodels.ViewModelProviderFactory
+import dagger.android.support.DaggerFragment
+import javax.inject.Inject
 
-abstract class BaseCategoriesFragment : BaseCategoriesSourcesFragment(),
-    SourceListAdapter.Interaction {
+abstract class BaseCategoriesFragment : DaggerFragment(),SourceListAdapter.Interaction {
     private var recyclerView: RecyclerView? = null
     private lateinit var sourceListAdapter: SourceListAdapter
+    @Inject
+    lateinit var  providerFactory: ViewModelProviderFactory
+    lateinit var viewModel: SourcesViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,7 +42,11 @@ abstract class BaseCategoriesFragment : BaseCategoriesSourcesFragment(),
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = activity?.run {
+            ViewModelProvider(this,providerFactory).get(SourcesViewModel::class.java)
+        }?:throw Exception ("Invalid Activity")
         Log.d(TAG, "BaseCategoriesFragment: onViewCreated: ${viewModel}")
+
         subscribeObservers()
         //the request has already been executed by the source fragment
     }

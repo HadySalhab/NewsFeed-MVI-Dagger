@@ -44,7 +44,8 @@ abstract class BaseActivity:DaggerAppCompatActivity(),DataStateChangeListener{
         }
     }
 
-    abstract fun displayProgressBar(bool: Boolean) //we need access to the progress_Bar
+    //we need access to the progress_Bar
+    abstract fun displayProgressBar(bool: Boolean)
 
     private fun handleStateResponseType(responseType: ResponseType,message:String?){
         when(responseType){

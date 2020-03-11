@@ -6,11 +6,9 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import com.android.myapplication.newsfeed.R
-import com.android.myapplication.newsfeed.ui.favorites.BaseFavoritesFragment
-import com.android.myapplication.newsfeed.ui.headlines.BaseHeadlineFragment
 import com.android.myapplication.newsfeed.ui.sources.ArticlesSourceFragment
-import com.android.myapplication.newsfeed.ui.sources.BaseSourcesFragment
 import com.android.myapplication.newsfeed.util.BottomNavController
+import com.android.myapplication.newsfeed.util.load
 import com.android.myapplication.newsfeed.util.setUpNavigation
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -61,26 +59,19 @@ class MainActivity : BaseActivity(),
     private fun setupActionBar() = setSupportActionBar(toolbar)
 
 
-    override fun displayProgressBar(bool: Boolean) =
-        if(bool){
-            progress_bar.visibility = View.VISIBLE
-        }
-        else{
-            progress_bar.visibility = View.GONE
-        }
-
+    override fun displayProgressBar(bool: Boolean) = progress_bar.load(bool)
 
     override fun onBackPressed() = bottomNavController.onBackPressed()
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem) =
         when(item.itemId){
             android.R.id.home -> {
                 onBackPressed()
+                true
             }
+            else->super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
 
-    }
 
 
     override fun onGraphChange() {
@@ -96,20 +87,14 @@ class MainActivity : BaseActivity(),
             .findFragmentById(bottomNavController.containerId)
             ?.childFragmentManager
             ?.fragments
-        if(fragments != null){
-            for(fragment in fragments){
-                if(fragment is BaseHeadlineFragment){
-                    fragment.cancelActiveJobs()
-                }
-                if(fragment is BaseSourcesFragment){
-                    fragment.cancelActiveJobs()
-                }
-                if(fragment is BaseFavoritesFragment){
+        fragments?.let {
+            for(fragment in it){
+                if(fragment is BaseFragment){
                     fragment.cancelActiveJobs()
                 }
             }
         }
-        displayProgressBar(false)
+        //displayProgressBar(false)
     }
 
     override fun onReselectNavItem(navController: NavController, fragment: Fragment) = when(fragment){

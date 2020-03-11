@@ -1,7 +1,5 @@
 package com.android.myapplication.newsfeed.ui.headlines
 
-import android.app.SearchManager
-import android.content.Context.SEARCH_SERVICE
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,6 +8,7 @@ import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -21,17 +20,25 @@ import com.android.myapplication.newsfeed.models.Article
 import com.android.myapplication.newsfeed.ui.DataState
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesViewState
 import com.android.myapplication.newsfeed.ui.headlines.viewmodel.*
+import com.android.myapplication.newsfeed.ui.BaseFragment
 import com.android.myapplication.newsfeed.util.AUSTRALIA
+import com.android.myapplication.newsfeed.util.TAG
 import com.android.myapplication.newsfeed.util.USA
+import com.android.myapplication.newsfeed.viewmodels.ViewModelProviderFactory
 import com.bumptech.glide.RequestManager
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import java.lang.Exception
 import javax.inject.Inject
 
-class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interaction,SwipeRefreshLayout.OnRefreshListener {
+
+class HeadlineFragment : BaseFragment(), HeadlinesListAdapter.Interaction,SwipeRefreshLayout.OnRefreshListener {
 
     @Inject
     lateinit var requestManager: RequestManager
+    @Inject
+    lateinit var  providerFactory: ViewModelProviderFactory
+    lateinit var viewModel: HeadlinesViewModel
 
     private lateinit var headlinesAdapter: HeadlinesListAdapter
     private  var recyclerView : RecyclerView?=null
@@ -64,11 +71,21 @@ class HeadlineFragment : BaseHeadlineFragment(), HeadlinesListAdapter.Interactio
             view,
             savedInstanceState
         ) //BaseHeadlineFragment implementation and Fragment()
+        viewModel = activity?.run {
+            ViewModelProvider(this,providerFactory).get(HeadlinesViewModel::class.java)
+        }?:throw Exception ("Invalid Activity")
+        Log.d(TAG, "HeadlineFragment: onViewCreated: ${viewModel} ")
+        cancelActiveJobs()
         initChipGroup()
         subscribeObservers()
         executeRequest()
 
     }
+
+    override fun getFragmentId(): Int = R.id.headlineFragment
+    override fun cancelActiveJobs()= viewModel.cancelActiveJobs()
+
+
     // no point of firing the event everytime we rotate or change graph
     //as long as the viewModel is alive, no need to re-fire
     //viewModel life span is tied to the MainActivity (store)

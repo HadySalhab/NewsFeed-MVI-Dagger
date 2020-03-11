@@ -6,17 +6,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.android.myapplication.newsfeed.R
+import com.android.myapplication.newsfeed.ui.BaseFragment
 import com.android.myapplication.newsfeed.ui.sources.state.SourcesStateEvent
+import com.android.myapplication.newsfeed.util.TAG
+import com.android.myapplication.newsfeed.viewmodels.ViewModelProviderFactory
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import java.lang.Exception
+import javax.inject.Inject
 
-class SourcesFragment : BaseSourcesFragment() {
+class SourcesFragment : BaseFragment() {
     private var viewPager: ViewPager2? = null
     private var tabLayout: TabLayout? = null
     private var tabLayoutMediator:TabLayoutMediator?=null
     private var adapter:SourcesPagerAdapter?=null
+
+    @Inject
+    lateinit var  providerFactory: ViewModelProviderFactory
+    lateinit var viewModel: SourcesViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,10 +43,19 @@ class SourcesFragment : BaseSourcesFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel = activity?.run {
+            ViewModelProvider(this,providerFactory).get(SourcesViewModel::class.java)
+        }?:throw Exception ("Invalid Activity")
         Log.d(TAG, "SourcesFragment: onViewCreated: ${viewModel} ")
+        viewModel.cancelActiveJobs()
         subscribeObservers()
         executeRequest()
     }
+
+    override fun getFragmentId(): Int = R.id.sourcesFragment
+    override fun cancelActiveJobs() = viewModel.cancelActiveJobs()
+
 
     private fun executeRequest(){
         viewModel.executeQueryEvent.observe(viewLifecycleOwner, Observer { queryEvent->
