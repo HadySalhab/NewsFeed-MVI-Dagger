@@ -37,7 +37,7 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
         }
     }
 
-    fun doCacheRequest() {
+    private fun doCacheRequest() {
         coroutineScope.launch {
             delay(TESTING_CACHE_DELAY)
             // View data from cache only and return
@@ -45,7 +45,7 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
         }
     }
 
-    fun doNetworkRequest() {
+    private fun doNetworkRequest() {
         coroutineScope.launch {
 
             // simulate a network delay for testing
@@ -75,7 +75,7 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
         }
     }
 
-    suspend fun handleNetworkCall(response: GenericApiResponse<ResponseObject>) {
+   private suspend fun handleNetworkCall(response: GenericApiResponse<ResponseObject>) {
 
         when (response) {
             is ApiSuccessResponse -> {
@@ -92,7 +92,7 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
         }
     }
 
-    fun setValue(dataState: DataState<ViewStateType>) {
+    private fun setValue(dataState: DataState<ViewStateType>) {
         result.value = dataState
     }
 
@@ -132,7 +132,7 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
     }
 
 
-    fun onCompleteJob(dataState: DataState<ViewStateType>) {
+  protected fun onCompleteJob(dataState: DataState<ViewStateType>) {
         GlobalScope.launch(Dispatchers.Main) {
             job.complete() //this will invoke the invokeOnCompletion method
             setValue(dataState)
@@ -141,7 +141,7 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
 
     abstract fun setJob(job: Job)
 
-    fun asLiveData() = result as LiveData<DataState<ViewStateType>>
+     fun asLiveData() = result as LiveData<DataState<ViewStateType>>
 
     abstract suspend fun createCacheRequestAndReturn()
 
