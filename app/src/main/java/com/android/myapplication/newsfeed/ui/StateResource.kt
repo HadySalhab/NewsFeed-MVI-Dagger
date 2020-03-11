@@ -1,12 +1,19 @@
 package com.android.myapplication.newsfeed.ui
 
+import com.android.myapplication.newsfeed.util.ERROR_UNKNOWN
+
 
 data class Loading(val isLoading: Boolean)
 data class Data<T>(val data: Event<T>?, val response: Event<Response>?)
 data class StateError(val response: Response)
 
 
-data class Response(val message: String?, val responseType: ResponseType)
+data class Response private constructor(val message: String?, val responseType: ResponseType){
+    companion object{
+        fun dialogResponse(message: String = ERROR_UNKNOWN):Response = Response(message,ResponseType.Dialog())
+        fun toastResponse(message:String= ERROR_UNKNOWN):Response = Response(message,ResponseType.Toast())
+    }
+}
 sealed class ResponseType {
 
     class Toast : ResponseType()

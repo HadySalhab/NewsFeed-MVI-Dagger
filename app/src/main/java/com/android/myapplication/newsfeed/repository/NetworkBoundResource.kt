@@ -30,10 +30,7 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
             if (isNetworkAvailable) {
                 doNetworkRequest()
             } else {
-                onErrorReturn(
-                    UNABLE_TODO_OPERATION_WO_INTERNET, shouldUseDialog = true,
-                    shouldUseToast = false
-                )
+                onCompleteJob(DataState.error(Response.dialogResponse(UNABLE_TODO_OPERATION_WO_INTERNET)))
             }
         } else {
             doCacheRequest()
@@ -86,11 +83,11 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
             }
             is ApiErrorResponse -> {
                 Log.e(TAG, "NetworkBoundResource: ${response.errorMessage}")
-                onErrorReturn(response.errorMessage, true, false)
+                onCompleteJob(DataState.error(Response.dialogResponse(response.errorMessage)))
             }
             is ApiEmptyResponse -> {
                 Log.e(TAG, "NetworkBoundResource: Request returned NOTHING (HTTP 204).")
-                onErrorReturn(ERROR_EMPTY_RESPONSE, true, false)
+                onCompleteJob(DataState.error(Response.dialogResponse(ERROR_EMPTY_RESPONSE)))
             }
         }
     }
@@ -106,19 +103,23 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
             invokeImmediately = true,
             handler = object : CompletionHandler {
                 override fun invoke(cause: Throwable?) {
-                    if (job.isCancelled) { //the only way the job is going to cancel is if we reached network timeout
+                    if (job.isCancelled) { //the only way the job is going to cancel is if we reached network timeout and when navGraph is changed
+                        var message:String = ERROR_UNKNOWN
                         Log.e(TAG, "NetworkBoundResource: Job has been cancelled.")
-                        cause?.let {
+                        with(cause?.message) {
                             Log.e(
                                 TAG,
-                                "NetworkBoundResource: job has been cancelled. ${it.message}"
+                                "NetworkBoundResource: job has been cancelled. ${this}"
                             )
-                            onErrorReturn(
-                                it.message,
-                                false,
-                                true
-                            ) //message = ErrorHandling.UNABLE_TO_RESOLVE_HOST
-                        } ?: onErrorReturn(ERROR_UNKNOWN, false, true)
+                            if (this == UNABLE_TO_RESOLVE_HOST) {
+                                message = ERROR_CHECK_NETWORK_CONNECTION
+                            } else {
+                                this?.let {
+                                    message = it
+                                }
+                            }
+                        }
+                        onCompleteJob(DataState.error(Response.toastResponse(message)))
                     } else if (job.isCompleted) {
                         Log.e(TAG, "NetworkBoundResource: Job has been completed.")
                         // Do nothing? Should be handled already
@@ -130,34 +131,6 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
         job = it
     }
 
-
-    //this function will setup the error and complete the job
-    fun onErrorReturn(errorMessage: String?, shouldUseDialog: Boolean, shouldUseToast: Boolean) {
-        var msg = errorMessage
-        var useDialog = shouldUseDialog
-        var responseType: ResponseType = ResponseType.None()
-        if (msg == null) {
-            msg = ERROR_UNKNOWN
-        } else if (isNetworkError(msg)) { //check if msg = ErrorHandling.UNABLE_TO_RESOLVE_HOST, which is network timeout
-            msg = ERROR_CHECK_NETWORK_CONNECTION //maybe the network conx is low
-            useDialog = false
-        }
-        if (shouldUseToast) {
-            responseType = ResponseType.Toast()
-        }
-        if (useDialog) {
-            responseType = ResponseType.Dialog()
-        }
-
-        onCompleteJob(
-            DataState.error(
-                Response(
-                    msg,
-                    responseType
-                )
-            )
-        )
-    }
 
     fun onCompleteJob(dataState: DataState<ViewStateType>) {
         GlobalScope.launch(Dispatchers.Main) {
