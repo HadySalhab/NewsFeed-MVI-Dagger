@@ -42,9 +42,6 @@ class MainActivity : BaseActivity(),
     }
 
     override fun getNavGraphId(itemId: Int): Int = when (itemId) {
-        R.id.nav_headlines -> {
-            R.navigation.nav_headlines
-        }
         R.id.nav_sources -> {
             R.navigation.nav_sources
         }
