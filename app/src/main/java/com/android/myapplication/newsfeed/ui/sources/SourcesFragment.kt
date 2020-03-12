@@ -54,7 +54,9 @@ class SourcesFragment : BaseFragment() {
     }
 
     override fun getFragmentId(): Int = R.id.sourcesFragment
-    override fun cancelActiveJobs() = viewModel.cancelActiveJobs()
+    override fun cancelActiveJobs() {
+        if(::viewModel.isInitialized) viewModel.cancelActiveJobs()
+    }
 
 
     private fun executeRequest(){

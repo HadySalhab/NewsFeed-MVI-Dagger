@@ -6,7 +6,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.*
+import android.widget.EditText
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,10 +20,10 @@ import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.android.myapplication.newsfeed.R
 import com.android.myapplication.newsfeed.models.Article
+import com.android.myapplication.newsfeed.ui.BaseFragment
 import com.android.myapplication.newsfeed.ui.DataState
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesViewState
 import com.android.myapplication.newsfeed.ui.headlines.viewmodel.*
-import com.android.myapplication.newsfeed.ui.BaseFragment
 import com.android.myapplication.newsfeed.util.AUSTRALIA
 import com.android.myapplication.newsfeed.util.TAG
 import com.android.myapplication.newsfeed.util.USA
@@ -28,7 +31,6 @@ import com.android.myapplication.newsfeed.viewmodels.ViewModelProviderFactory
 import com.bumptech.glide.RequestManager
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import java.lang.Exception
 import javax.inject.Inject
 
 
@@ -83,7 +85,9 @@ class HeadlineFragment : BaseFragment(), HeadlinesListAdapter.Interaction,SwipeR
     }
 
     override fun getFragmentId(): Int = R.id.headlineFragment
-    override fun cancelActiveJobs()= viewModel.cancelActiveJobs()
+    override fun cancelActiveJobs(){
+        if(::viewModel.isInitialized) viewModel.cancelActiveJobs()
+    }
 
 
     // no point of firing the event everytime we rotate or change graph
@@ -237,6 +241,10 @@ class HeadlineFragment : BaseFragment(), HeadlinesListAdapter.Interaction,SwipeR
     override fun onItemSelected(position: Int, item: Article) {
         Log.d(TAG, "onItemSelected: position,article: ${position}, ${item} ")
         fireIntent(item)
+    }
+
+    override fun onFavIconClicked(isFavorite:Boolean) {
+        Log.d(TAG, "HeadlineFragment: onFavIconClicked: $isFavorite")
     }
 
     private fun fireIntent(item: Article) = with(Intent(Intent.ACTION_VIEW)){

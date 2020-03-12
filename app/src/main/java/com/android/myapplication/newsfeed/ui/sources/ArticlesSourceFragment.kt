@@ -37,7 +37,9 @@ class ArticlesSourceFragment : BaseFragment(){
     }
 
     override fun getFragmentId(): Int = R.id.articlesSourceFragment
-    override fun cancelActiveJobs() = viewModel.cancelActiveJobs()
+    override fun cancelActiveJobs() {
+        if(::viewModel.isInitialized) viewModel.cancelActiveJobs()
+    }
 
 
 }
