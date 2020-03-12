@@ -2,7 +2,6 @@ package com.android.myapplication.newsfeed.ui
 
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import com.android.myapplication.newsfeed.R
@@ -94,14 +93,14 @@ class MainActivity : BaseActivity(),
         //displayProgressBar(false)
     }
 
-    override fun onReselectNavItem(navController: NavController, fragment: Fragment) = when(fragment){
-        is ArticlesSourceFragment -> {
+    override fun onReselectNavItem(navController: NavController, fragment: Fragment) {
+        if(fragment is ArticlesSourceFragment){
             navController.navigate(R.id.action_articlesSourceFragment_to_sourcesFragment)
         }
-        else->{
-            //Nothing need to be done here
-        }
     }
+
+
+
 
     override fun expandAppBar() = findViewById<AppBarLayout>(R.id.appbar_layout).setExpanded(true)
 
