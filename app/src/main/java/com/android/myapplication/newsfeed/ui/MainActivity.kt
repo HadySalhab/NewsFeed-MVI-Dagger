@@ -22,11 +22,11 @@ class MainActivity : BaseActivity(),
     private lateinit var bottomNavigationView: BottomNavigationView
     private val bottomNavController by lazy(LazyThreadSafetyMode.NONE) {
         BottomNavController(
-            this,
-            R.id.main_nav_host_fragment,
-            R.id.nav_headlines,
-            this,
-            this
+            context=this,
+            containerId = R.id.main_nav_host_fragment,
+            appStartDestinationId = R.id.nav_headlines,
+            graphChangeListener = this,
+            navGraphProvider = this
         )
     }
 
