@@ -43,7 +43,7 @@ constructor(
                  object: LiveData<DataState<HeadlinesViewState>>(){
                     override fun onActive() {
                         super.onActive()
-                        value = DataState(null, Loading(false), null)
+                        value = DataState.none()
                     }
                 }
             }

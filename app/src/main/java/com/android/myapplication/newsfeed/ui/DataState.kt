@@ -1,6 +1,6 @@
 package com.android.myapplication.newsfeed.ui
 
-data class DataState<T>(
+class DataState<T> private constructor(
  var error: Event<StateError>? = null,
  var loading: Loading = Loading(
   false
@@ -8,44 +8,37 @@ data class DataState<T>(
  var data: Data<T>? = null
 ) {
 
+ //CONSIDER STATIC
+ //FACTORY METHODS INSTEAD OF
+ //CONSTRUCTORS
+ //item 1
  companion object {
 
   fun <T> error(
    response: Response
-  ): DataState<T> {
-   return DataState(
+  ): DataState<T> = DataState(
     error = Event(
      StateError(
       response
      )
-    ),
-    loading = Loading(false),
-    data = null
+    )
    )
-  }
 
   fun <T> loading(
    isLoading: Boolean
-  ): DataState<T> {
-   return DataState(
-    error = null,
-    loading = Loading(isLoading),
-    data = null
+  ): DataState<T> = DataState(
+    loading = Loading(isLoading)
    )
-  }
 
   fun <T> data(
    data: T? = null,
    response: Response? = null
-  ): DataState<T> {
-   return DataState(
-    error = null,
-    loading = Loading(false),
+  ) = DataState(
     data = Data(
      Event.dataEvent(data),
      Event.responseEvent(response)
     )
    )
+  fun <T> none():DataState<T> = DataState()
   }
  }
-}
