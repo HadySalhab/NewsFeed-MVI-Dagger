@@ -4,21 +4,21 @@ data class Article(
 
     val id: Long = 0,
 
-    var title: String? = null,
+    val title: String?=null,
 
-    var author: String? = null,
+    val author: String?=null,
 
-    var description: String? = null,
+    val description: String?=null,
 
-    var url: String? = null,
+    val url: String?=null,
 
-    var urlToImage: String? = null,
+    val urlToImage: String?=null,
 
-    var publishDate: String? = null,
+    val publishDate: String?=null,
 
-    var content: String? = null,
+    val content: String?=null,
 
-    var source: Source? = null,
+    val source: Source?=null,
 
     var isFavorite: Boolean = false
 

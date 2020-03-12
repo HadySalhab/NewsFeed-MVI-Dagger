@@ -5,19 +5,19 @@ import com.google.gson.annotations.SerializedName
 
 data class ArticleNetwork(
     @SerializedName("author")
-    var author:String?=null,
+    val author:String,
     @SerializedName("title")
-    var title:String?=null,
+    val title:String,
     @SerializedName("description")
-    var description:String?=null,
+    val description:String,
     @SerializedName("url")
-    var url:String?=null,
+    val url:String,
     @SerializedName("urlToImage")
-    var urlToImage:String?=null,
+    val urlToImage:String,
     @SerializedName("publishedAt")
-    var publishDate:String?=null,
+    val publishDate:String,
     @SerializedName("content")
-    var content:String?=null,
+    val content:String,
     @SerializedName("source")
-    var source: Source?=null
+    val source: Source
 )

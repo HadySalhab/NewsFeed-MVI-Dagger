@@ -58,17 +58,21 @@ constructor(
                 val isQueryExhausted:Boolean = response.body.totalResults<page*20 //20 is the default number of articles returned per page
                     if(!articleNetworkList.isNullOrEmpty()) {
                         articleNetworkList.forEach { articleNetwork->
-                            articleList.add(
-                                Article(
-                                    title = articleNetwork.title,
-                                    description = articleNetwork.description,
-                                    url = articleNetwork.url,
-                                    urlToImage = articleNetwork.urlToImage,
-                                    publishDate = articleNetwork.publishDate,
-                                    content = articleNetwork.content,
-                                    source = articleNetwork.source
+                            articleNetwork.run {
+                                articleList.add(
+                                    Article(
+                                        title = title,
+                                        description = description,
+                                        url = url,
+                                        urlToImage = urlToImage,
+                                        publishDate = publishDate,
+                                        content = content,
+                                        source = source,
+                                        author = author
+                                    )
                                 )
-                            )
+                            }
+
 
                         }
 

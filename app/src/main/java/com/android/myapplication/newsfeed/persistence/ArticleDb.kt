@@ -10,14 +10,14 @@ import com.google.gson.annotations.SerializedName
 data class ArticleDb(
     @PrimaryKey(autoGenerate = true)
     val id:Long,
-    var author:String?=null,
-    var title:String?=null,
-    var description:String?=null,
-    var url:String?=null,
+    val author:String,
+    val title:String,
+    val description:String,
+    val url:String,
     @ColumnInfo(name="url_image")
-    var urlToImage:String?=null,
+    val urlToImage:String,
     @ColumnInfo(name="publish_date")
-    var publishDate:String?=null,
-    var content:String?=null,
-    var source: Source?=null
+    val publishDate:String,
+    val content:String,
+    val source: Source
 )
