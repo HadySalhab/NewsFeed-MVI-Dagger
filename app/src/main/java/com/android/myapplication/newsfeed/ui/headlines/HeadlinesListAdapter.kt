@@ -1,6 +1,5 @@
 package com.android.myapplication.newsfeed.ui.headlines
 
-import android.text.format.DateUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -138,6 +137,11 @@ class HeadlinesListAdapter(
                 Log.d(TAG, "HeadlinesViewHolder itemView clicked...")
                 interaction?.onItemSelected(adapterPosition, item)
             }
+            cb_favorite_image.apply {
+                setOnCheckedChangeListener { buttonView, isChecked ->
+                    interaction?.onFavIconClicked(isChecked)
+                }
+            }
             requestManager
                 .load(item.urlToImage)
                 .transition(withCrossFade())
@@ -155,5 +159,6 @@ class HeadlinesListAdapter(
 
     interface Interaction {
         fun onItemSelected(position: Int, item: Article)
+        fun onFavIconClicked(isFavorite:Boolean)
     }
 }

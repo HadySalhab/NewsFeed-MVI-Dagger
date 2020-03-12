@@ -81,19 +81,21 @@
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:gravity="center_vertical"
-                    android:layout_alignBottom="@id/iv_favorite_image"
-                    android:layout_toStartOf="@+id/iv_favorite_image"
+                    android:layout_alignBottom="@id/cb_favorite_image"
+                    android:layout_toStartOf="@+id/cb_favorite_image"
                     tools:text="2020-03-01"
                     android:paddingStart="@dimen/small_padding"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content" />
-                <ImageView
-                    android:id="@+id/iv_favorite_image"
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/cb_favorite_image"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_toStartOf="@id/iv_share_image"
                     android:layout_marginEnd="@dimen/small_margin"
-                    android:src="@drawable/ic_favorite_void" />
+                    android:button="@drawable/ic_favorite_selector"
+                    android:background="@drawable/ic_favorite_void" />
 
                 <ImageView
                     android:id="@+id/iv_share_image"
