@@ -3,9 +3,9 @@ package com.android.myapplication.newsfeed.ui.headlines.state
 import com.android.myapplication.newsfeed.models.Article
 
 data class HeadlinesViewState(
-    var headlinesFields: HeadlineFields = HeadlineFields()
+    val headlinesFields: HeadlineFields = HeadlineFields()
 ) {
-    data class HeadlineFields(
+     class HeadlineFields(
 
         //these fields will be updated from the viewState coming from the network
         var headlinesList: List<Article> = ArrayList<Article>(),

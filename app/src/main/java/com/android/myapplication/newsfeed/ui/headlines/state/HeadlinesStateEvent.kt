@@ -1,11 +1,11 @@
 package com.android.myapplication.newsfeed.ui.headlines.state
 
 sealed class HeadlinesStateEvent {
-    data class HeadlinesSearchEvent(
-        var country:String ,
-        var category:String,
-        var searchQuery:String,
-        var page:Int
+     class HeadlinesSearchEvent(
+        val country:String ,
+        val category:String,
+        val searchQuery:String,
+        val page:Int
     ): HeadlinesStateEvent()
     class None: HeadlinesStateEvent()
 }
