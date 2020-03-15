@@ -24,12 +24,12 @@ class HeadlinesListAdapter(
     private val HEADLINE_ITEM = 0
     //article Item with id = -1
     private val NO_MORE_RESULTS_HEADLINE_MARKER = Article(
-        id = NO_MORE_RESULTS.toLong()
+        title = "com.android.myapplication.newsfeed.NO_MORE_RESULT"
     )
     val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Article>() {
 
         override fun areItemsTheSame(oldItem: Article, newItem: Article): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem.url.equals(newItem.url)
         }
 
         override fun areContentsTheSame(oldItem: Article, newItem: Article): Boolean {
@@ -109,7 +109,7 @@ class HeadlinesListAdapter(
 
     //if the id of the last article is greater than -1, means its a normal article
     //otherwise its a no more result article
-    override fun getItemViewType(position: Int) = if(differ.currentList[position].id > -1){
+    override fun getItemViewType(position: Int) = if(differ.currentList[position].title != "com.android.myapplication.newsfeed.NO_MORE_RESULT" ){
            HEADLINE_ITEM
         } else {
        NO_MORE_RESULTS
@@ -138,8 +138,8 @@ class HeadlinesListAdapter(
                 interaction?.onItemSelected(adapterPosition, item)
             }
             cb_favorite_image.apply {
-                setOnCheckedChangeListener { buttonView, isChecked ->
-                    interaction?.onFavIconClicked(isChecked)
+                setOnClickListener {
+                    interaction?.onFavIconClicked(isChecked,item)
                 }
             }
             requestManager
@@ -152,6 +152,7 @@ class HeadlinesListAdapter(
                 tv_article_description.text = item.description
                 tv_article_title.text =item.title
                 tv_article_source_name.text = item.source?.name
+                cb_favorite_image.isChecked = item.isFavorite
             }
 
         }
@@ -159,6 +160,6 @@ class HeadlinesListAdapter(
 
     interface Interaction {
         fun onItemSelected(position: Int, item: Article)
-        fun onFavIconClicked(isFavorite:Boolean)
+        fun onFavIconClicked(isFavorite:Boolean,item:Article)
     }
 }

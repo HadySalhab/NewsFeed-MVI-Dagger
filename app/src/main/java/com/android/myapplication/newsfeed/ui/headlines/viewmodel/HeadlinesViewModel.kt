@@ -6,10 +6,12 @@ import androidx.lifecycle.LiveData
 import com.android.myapplication.newsfeed.repository.HeadlinesRepository
 import com.android.myapplication.newsfeed.ui.BaseViewModel
 import com.android.myapplication.newsfeed.ui.DataState
-import com.android.myapplication.newsfeed.ui.Loading
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesStateEvent
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesViewState
-import com.android.myapplication.newsfeed.util.*
+import com.android.myapplication.newsfeed.util.TAG
+import com.android.myapplication.newsfeed.util.getCategory
+import com.android.myapplication.newsfeed.util.getCountry
+import com.android.myapplication.newsfeed.util.saveCountryAndCategory
 import javax.inject.Inject
 
 
@@ -47,7 +49,13 @@ constructor(
                     }
                 }
             }
+        is HeadlinesStateEvent.HeadlinesAddToFavEvent -> {
+                headlinesRepository.insertArticleToDB(stateEvent.article)
         }
+        is HeadlinesStateEvent.HeadlinesRemoveFromFavEvent -> {
+            headlinesRepository.deleteArticleFromDB(stateEvent.article)
+        }
+    }
 
     fun cancelActiveJobs() {
         headlinesRepository.cancelActiveJobs() //repository extends JobManager, cancelActiveJobs is part of the job Manager

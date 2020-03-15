@@ -3,7 +3,6 @@ package com.android.myapplication.newsfeed.repository
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
-import com.android.myapplication.newsfeed.BaseApplication
 import com.android.myapplication.newsfeed.api.NewsApi
 import com.android.myapplication.newsfeed.api.data.SourceNetwork
 import com.android.myapplication.newsfeed.api.responses.SourcesResponse
@@ -30,15 +29,11 @@ constructor(
     fun getSources(): LiveData<DataState<SourcesViewState>> {
         Log.d(TAG, "SourceRepository: getSources() is called ")
         return object : NetworkBoundResource<SourcesResponse, Void, SourcesViewState>(
-            app.isNetworkAvailable(),
-            true
+            app.isNetworkAvailable()
         ) {
             override fun setJob(job: Job) = addJob("getSources", job)
 
 
-            override suspend fun createCacheRequestAndReturn() {
-                //N/A
-            }
 
             override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<SourcesResponse>) {
                 Log.d(TAG, "handleApiSuccessResponse: ${response.body}")
@@ -75,10 +70,7 @@ constructor(
             }
 
             override fun createCall(): LiveData<GenericApiResponse<SourcesResponse>> = newsApi.getSources()
-
-
-            override fun loadFromCache()=null
-
+            override suspend fun loadFromCache()= null
 
         }.asLiveData()
     }

@@ -22,11 +22,13 @@ import com.android.myapplication.newsfeed.R
 import com.android.myapplication.newsfeed.models.Article
 import com.android.myapplication.newsfeed.ui.BaseFragment
 import com.android.myapplication.newsfeed.ui.DataState
+import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesStateEvent
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesViewState
 import com.android.myapplication.newsfeed.ui.headlines.viewmodel.*
 import com.android.myapplication.newsfeed.util.AUSTRALIA
 import com.android.myapplication.newsfeed.util.TAG
 import com.android.myapplication.newsfeed.util.USA
+import com.android.myapplication.newsfeed.util.replaceArticleAndReturn
 import com.android.myapplication.newsfeed.viewmodels.ViewModelProviderFactory
 import com.bumptech.glide.RequestManager
 import com.google.android.material.chip.Chip
@@ -243,9 +245,22 @@ class HeadlineFragment : BaseFragment(), HeadlinesListAdapter.Interaction,SwipeR
         fireIntent(item)
     }
 
-    override fun onFavIconClicked(isFavorite:Boolean) {
-        Log.d(TAG, "HeadlineFragment: onFavIconClicked: $isFavorite")
+    override fun onFavIconClicked(isFavorite: Boolean, item: Article) {
+        viewModel.updateViewState { headlineFields ->
+            Log.d(TAG, "onFavIconClicked: ${item.isFavorite}")
+            Log.d(TAG, "onFavIconClicked: ${headlineFields.headlinesList.replaceArticleAndReturn(item).map { it.isFavorite }}")
+            headlineFields.headlinesList = headlineFields.headlinesList.replaceArticleAndReturn(item)
+        }
+        if(isFavorite) {
+            viewModel.setStateEvent(HeadlinesStateEvent.HeadlinesAddToFavEvent(item))
+        }
+        else{
+            viewModel.setStateEvent(HeadlinesStateEvent.HeadlinesRemoveFromFavEvent(item))
+        }
+
+
     }
+
 
     private fun fireIntent(item: Article) = with(Intent(Intent.ACTION_VIEW)){
         data = Uri.parse(item.url)

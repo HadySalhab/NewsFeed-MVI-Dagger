@@ -11,6 +11,8 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import com.afollestad.materialdialogs.MaterialDialog
 import com.android.myapplication.newsfeed.R
+import com.android.myapplication.newsfeed.models.Article
+import com.android.myapplication.newsfeed.persistence.ArticleDb
 
 fun String.formatStringDate() = this.removeRange(this.indexOf("T") until this.length)
 fun SharedPreferences.getCountry() = getString(ARTICLE_COUNTRY_KEY, AUSTRALIA)!!
@@ -52,3 +54,33 @@ fun Context.displayErrorDialog(errorMessage: String?) = MaterialDialog(this)
 fun ProgressBar.load(show: Boolean) {
     visibility = if (show) View.VISIBLE else View.GONE
 }
+
+fun convertArticleUItoDB(article: Article) = with(article) {
+    ArticleDb(
+        title = title,
+        author = author,
+        description = description,
+        url =url,
+        urlToImage = urlToImage,
+        publishDate = publishDate,
+        content = content,
+        source = source,
+        isFavorite = isFavorite
+    )
+}
+
+fun convertArticleDBtoUI(articleDB: ArticleDb) = with(articleDB) {
+    Article(
+        title,
+        author,
+        description,
+        url,
+        urlToImage,
+        publishDate,
+        content,
+        source,
+        isFavorite
+    )
+}
+
+fun List<Article>.replaceArticleAndReturn(article: Article) = map{if(it==article) article.copy(isFavorite = !article.isFavorite) else it  }
