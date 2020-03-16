@@ -4,7 +4,7 @@ import com.android.myapplication.newsfeed.util.TESTING_CACHE_DELAY
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-abstract class DatabaseBoundResource<ResponseObject, CacheObject, ViewStateType>:BoundResource<ViewStateType>(){
+abstract class DatabaseBoundResource<CacheObject, ViewStateType>:BoundResource<ViewStateType>(){
     init {
         doCacheRequest()
     }
@@ -12,9 +12,9 @@ abstract class DatabaseBoundResource<ResponseObject, CacheObject, ViewStateType>
         coroutineScope.launch {
             delay(TESTING_CACHE_DELAY)
             // View data from cache only and return
-            insertOrRemoveArticle()
+            dbOperation()
         }
     }
-    abstract suspend fun insertOrRemoveArticle()
+    abstract suspend fun dbOperation()
 
 }

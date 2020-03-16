@@ -109,8 +109,8 @@ constructor(
 
     fun insertArticleToDB(article: Article): LiveData<DataState<HeadlinesViewState>> {
         return object :
-            DatabaseBoundResource<HeadlinesResponse, List<ArticleDb>, HeadlinesViewState>() {
-            override suspend fun insertOrRemoveArticle() {
+            DatabaseBoundResource<List<ArticleDb>, HeadlinesViewState>() {
+            override suspend fun dbOperation() {
                 withContext(NonCancellable) {
                     article.isFavorite = true
                     articlesDao.insert(convertArticleUItoDB(article))
@@ -131,8 +131,8 @@ constructor(
 
      fun deleteArticleFromDB(article: Article): LiveData<DataState<HeadlinesViewState>> {
         return object :
-            DatabaseBoundResource<HeadlinesResponse, List<ArticleDb>, HeadlinesViewState>() {
-            override suspend fun insertOrRemoveArticle() {
+            DatabaseBoundResource<List<ArticleDb>, HeadlinesViewState>() {
+            override suspend fun dbOperation() {
                 withContext(NonCancellable) {
                     Log.d(TAG, "insertOrRemoveArticle: ${article.isFavorite} ")
                     articlesDao.deleteArticle(convertArticleUItoDB(article).url)

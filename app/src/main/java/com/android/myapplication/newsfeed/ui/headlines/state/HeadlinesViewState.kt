@@ -20,8 +20,6 @@ data class HeadlinesViewState(
         var searchQuery: String = "",
         var page:Int = 1, //page = 1 by default
         var isQueryInProgress:Boolean = false // same if it's loading , false by default
-
-
     )
 
 

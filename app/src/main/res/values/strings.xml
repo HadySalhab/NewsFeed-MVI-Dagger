@@ -25,4 +25,5 @@
     <string name="menu_item_search">Search</string>
     <string name="australia">Australia</string>
     <string name="united_states">United States</string>
+    <string name="no_favorite">You Have No Favorite Articles</string>
 </resources>
