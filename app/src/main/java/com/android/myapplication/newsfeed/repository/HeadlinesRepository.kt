@@ -14,7 +14,10 @@ import com.android.myapplication.newsfeed.persistence.ArticlesDao
 import com.android.myapplication.newsfeed.ui.DataState
 import com.android.myapplication.newsfeed.ui.Response
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesViewState
-import com.android.myapplication.newsfeed.util.*
+import com.android.myapplication.newsfeed.util.ApiSuccessResponse
+import com.android.myapplication.newsfeed.util.convertArticleDBtoUI
+import com.android.myapplication.newsfeed.util.convertArticleUItoDB
+import com.android.myapplication.newsfeed.util.isNetworkAvailable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
@@ -52,9 +55,9 @@ constructor(
                 val isQueryExhausted: Boolean =
                     response.body.totalResults < page * 20 //20 is the default number of articles returned per page
                 if (!articleNetworkList.isNullOrEmpty()) {
-                    articleNetworkList.forEach { articleNetwork ->
+                     articleList = ArrayList(articleNetworkList.map { articleNetwork ->
                         articleNetwork.run {
-                            articleList.add(
+
                                 Article(
                                     title = title,
                                     description = description,
@@ -66,17 +69,15 @@ constructor(
                                     author = author,
                                     isFavorite = false
                                 )
-                            )
+
                         }
-                    }
+                    })
                 }
                 if(!articleDbList.isNullOrEmpty()){
-                    articleDbList.forEach { articleDb->
-                        Log.d(TAG, "handleApiSuccessResponse articleDB: $articleDb")
-                       val article =  convertArticleDBtoUI(articleDb)
-                        article.isFavorite = false
-                        articleList= ArrayList(articleList.replaceArticleAndReturn(article))
-                    }
+                    val favArticle = articleDbList.map { convertArticleDBtoUI(it) }
+                    articleList = ArrayList((favArticle+articleList.toList()).distinctBy { article->
+                        article.url
+                    })
                 }
 
                 //switch context because handleApiSuccessResponse is running inside IO dispatcher
