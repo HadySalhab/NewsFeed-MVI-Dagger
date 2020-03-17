@@ -22,7 +22,7 @@ constructor(
                 favoritesRepository.getFavorites()
             }
             is FavoritesStateEvent.DeleteFromFavEvent -> {
-                AbsentLiveData.create<DataState<FavoritesViewState>>()
+               favoritesRepository.deleteArticle(stateEvent.article)
             }
             is FavoritesStateEvent.None -> {
                 AbsentLiveData.create<DataState<FavoritesViewState>>()

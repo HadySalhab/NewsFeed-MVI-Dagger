@@ -107,9 +107,7 @@ class FavoritesFragment : BaseFragment(), FavoritesListAdapter.Interaction {
 
     }
 
-    override fun onFavIconClicked(isFavorite: Boolean, item: Article) {
-
-    }
+    override fun onFavIconClicked(isFavorite: Boolean, item: Article)  = viewModel.setStateEvent(FavoritesStateEvent.DeleteFromFavEvent(item))
 
 
 }
