@@ -56,7 +56,8 @@ constructor(
             headlinesRepository.deleteArticleFromDB(stateEvent.article)
         }
         is HeadlinesStateEvent.HeadlinesCheckFavEvent->{
-            headlinesRepository.checkFavorite(stateEvent.articles)
+            Log.d(TAG, "handleStateEvent: ${stateEvent.isQueryExhausted}")
+            headlinesRepository.checkFavorite(stateEvent.articles,stateEvent.isQueryExhausted)
         }
     }
 

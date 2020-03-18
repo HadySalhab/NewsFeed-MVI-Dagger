@@ -108,8 +108,10 @@ class HeadlineFragment : BaseFragment(), HeadlinesListAdapter.Interaction,SwipeR
                         }
                     }
                 }else{
-                   Log.d(TAG, "executeRequest: check favorites")
-                   viewModel.setStateEvent(HeadlinesStateEvent.HeadlinesCheckFavEvent(viewModel.getVSHeadlines().headlinesList))
+                   if(!viewModel.getVSHeadlines().headlinesList.isNullOrEmpty()) {
+                       Log.d(TAG, "handlePaginationSuccessResult fragment: ${viewModel.getVSHeadlines().isQueryExhausted} ")
+                       viewModel.setStateEvent(HeadlinesStateEvent.HeadlinesCheckFavEvent(viewModel.getVSHeadlines().headlinesList,viewModel.getVSHeadlines().isQueryExhausted))
+                   }
                }
             })
 
@@ -136,9 +138,7 @@ class HeadlineFragment : BaseFragment(), HeadlinesListAdapter.Interaction,SwipeR
                 Log.d(TAG, "HeadlineFragment: viewState observer: ${viewModelViewState}")
                 viewModelViewState?.let {
                     with(it.headlinesFields){
-                        headlinesList.forEach { item->
-                            Log.d(TAG, "subscribeObservers: newItem:${item.title} ..... ${item.isFavorite}")
-                        }
+
                         headlinesAdapter.submitList(
                             list = headlinesList, //could be empty or not
                             isQueryExhausted = isQueryExhausted
@@ -174,9 +174,7 @@ class HeadlineFragment : BaseFragment(), HeadlinesListAdapter.Interaction,SwipeR
                     Log.d(TAG, "HeadlineFragment: dataStateReturned: with data!=null, updating headlinesList")
                     //we are updating a field in the viewState, which will update the viewState itself
                     // and fire observers
-                    networkViewState.headlinesFields.headlinesList.forEach { item->
-                        Log.d(TAG, "blabla: ${item.title} and ${item.isFavorite}")
-                    }
+                    Log.d(TAG, "networkViewState :${networkViewState.headlinesFields.isQueryExhausted}")
                     viewModel.handlePaginationSuccessResult(networkViewState)
                 }
             }

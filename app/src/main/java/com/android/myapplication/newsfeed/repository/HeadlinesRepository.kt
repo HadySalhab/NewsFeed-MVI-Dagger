@@ -155,7 +155,7 @@ constructor(
         }.asLiveData()
     }
 
-    fun checkFavorite(articles: List<Article>): LiveData<DataState<HeadlinesViewState>> {
+    fun checkFavorite(articles: List<Article>,isQueryExhausted:Boolean): LiveData<DataState<HeadlinesViewState>> {
         return object :
             DatabaseBoundResource<List<ArticleDb>, HeadlinesViewState>() {
             override suspend fun dbOperation() {
@@ -171,12 +171,14 @@ constructor(
                         }
                     }
                 }
+                Log.d(TAG, "dbOperation: ${isQueryExhausted}")
                 withContext(Dispatchers.Main) {
                     onCompleteJob(
                         DataState.data(
                             HeadlinesViewState(
                                 HeadlinesViewState.HeadlineFields(
-                                    headlinesList = resetArticles
+                                    headlinesList = resetArticles,
+                                    isQueryExhausted = isQueryExhausted
                                 )
                             )
                         )

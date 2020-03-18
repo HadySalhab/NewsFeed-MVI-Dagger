@@ -4,6 +4,7 @@ import android.util.Log
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesStateEvent
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesViewState
 import com.android.myapplication.newsfeed.util.TAG
+import com.android.myapplication.newsfeed.util.findCommonAndReplace
 
 const val EMPTY_STRING = ""
 //country and category can be passed at runtime
@@ -58,10 +59,18 @@ fun HeadlinesViewModel.handlePaginationSuccessResult(networkVS: HeadlinesViewSta
     updateViewState { headlinesFields->
         with(headlinesFields){
             isQueryExhausted = networkHeadlineFields.isQueryExhausted
+            Log.d(TAG, "handlePaginationSuccessResult: ${isQueryExhausted}")
             if(page==1){
                 headlinesList = networkHeadlineFields.headlinesList
             }else{
-                headlinesList += networkHeadlineFields.headlinesList
+                val commonArticles = networkHeadlineFields.headlinesList.intersect(headlinesList)
+                if (!commonArticles.isNullOrEmpty()) {
+                    commonArticles.forEach { commonArticle ->
+                        headlinesList = ArrayList(headlinesList.toList().findCommonAndReplace(commonArticle))
+                    }
+                }else{
+                    headlinesList += networkHeadlineFields.headlinesList
+                }
             }
         }
     }
