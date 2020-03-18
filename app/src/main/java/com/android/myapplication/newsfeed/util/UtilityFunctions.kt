@@ -83,4 +83,4 @@ fun convertArticleDBtoUI(articleDB: ArticleDb) = with(articleDB) {
     )
 }
 
-fun List<Article>.replaceArticleAndReturn(article: Article) = map{if(it==article) article.copy(isFavorite = !article.isFavorite) else it  }
+fun List<Article>.findCommonAndReplace(article: Article) = map{if(it==article) article else it  }

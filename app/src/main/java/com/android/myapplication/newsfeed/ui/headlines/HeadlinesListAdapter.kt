@@ -33,7 +33,7 @@ class HeadlinesListAdapter(
         }
 
         override fun areContentsTheSame(oldItem: Article, newItem: Article): Boolean {
-            return oldItem.equals(newItem)
+            return  (oldItem.url.equals(newItem.url) && (oldItem.isFavorite.equals(newItem.isFavorite)))
         }
 
     }

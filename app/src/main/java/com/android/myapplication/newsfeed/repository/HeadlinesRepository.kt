@@ -14,10 +14,7 @@ import com.android.myapplication.newsfeed.persistence.ArticlesDao
 import com.android.myapplication.newsfeed.ui.DataState
 import com.android.myapplication.newsfeed.ui.Response
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesViewState
-import com.android.myapplication.newsfeed.util.ApiSuccessResponse
-import com.android.myapplication.newsfeed.util.convertArticleDBtoUI
-import com.android.myapplication.newsfeed.util.convertArticleUItoDB
-import com.android.myapplication.newsfeed.util.isNetworkAvailable
+import com.android.myapplication.newsfeed.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
@@ -55,29 +52,33 @@ constructor(
                 val isQueryExhausted: Boolean =
                     response.body.totalResults < page * 20 //20 is the default number of articles returned per page
                 if (!articleNetworkList.isNullOrEmpty()) {
-                     articleList = ArrayList(articleNetworkList.map { articleNetwork ->
+                    articleList = ArrayList(articleNetworkList.map { articleNetwork ->
                         articleNetwork.run {
 
-                                Article(
-                                    title = title,
-                                    description = description,
-                                    url = url,
-                                    urlToImage = urlToImage,
-                                    publishDate = publishDate,
-                                    content = content,
-                                    source = source,
-                                    author = author,
-                                    isFavorite = false
-                                )
+                            Article(
+                                title = title,
+                                description = description,
+                                url = url,
+                                urlToImage = urlToImage,
+                                publishDate = publishDate,
+                                content = content,
+                                source = source,
+                                author = author,
+                                isFavorite = false
+                            )
 
                         }
                     })
                 }
-                if(!articleDbList.isNullOrEmpty()){
+                if (!articleDbList.isNullOrEmpty()) {
                     val favArticle = articleDbList.map { convertArticleDBtoUI(it) }
-                    articleList = ArrayList((favArticle+articleList.toList()).distinctBy { article->
-                        article.url
-                    })
+                    val commonArticles = favArticle.intersect(articleList)
+                    if (!commonArticles.isNullOrEmpty()) {
+                        commonArticles.forEach { commonArticle ->
+                            articleList =
+                                ArrayList(articleList.toList().findCommonAndReplace(commonArticle))
+                        }
+                    }
                 }
 
                 //switch context because handleApiSuccessResponse is running inside IO dispatcher
@@ -115,12 +116,14 @@ constructor(
                     article.isFavorite = true
                     articlesDao.insert(convertArticleUItoDB(article))
                 }
-                onCompleteJob(
-                    DataState.data(
-                        null,
-                        Response.toastResponse("Article Added To Favorite")
+                withContext(Dispatchers.Main) {
+                    onCompleteJob(
+                        DataState.data(
+                            null,
+                            Response.toastResponse("Article Added To Favorite")
+                        )
                     )
-                )
+                }
             }
 
             override fun setJob(job: Job) = addJob("addToFavorite", job)
@@ -129,7 +132,7 @@ constructor(
     }
 
 
-     fun deleteArticleFromDB(article: Article): LiveData<DataState<HeadlinesViewState>> {
+    fun deleteArticleFromDB(article: Article): LiveData<DataState<HeadlinesViewState>> {
         return object :
             DatabaseBoundResource<List<ArticleDb>, HeadlinesViewState>() {
             override suspend fun dbOperation() {
@@ -137,16 +140,53 @@ constructor(
                     Log.d(TAG, "insertOrRemoveArticle: ${article.isFavorite} ")
                     articlesDao.deleteArticle(convertArticleUItoDB(article).url)
                 }
-                onCompleteJob(
-                    DataState.data(
-                        null,
-                        Response.toastResponse("Article Removed From Favorite")
+                withContext(Dispatchers.Main) {
+                    onCompleteJob(
+                        DataState.data(
+                            null,
+                            Response.toastResponse("Article Removed From Favorite")
+                        )
                     )
-                )
+                }
             }
 
             override fun setJob(job: Job) = addJob("removeFromFavorite", job)
 
         }.asLiveData()
     }
+
+    fun checkFavorite(articles: List<Article>): LiveData<DataState<HeadlinesViewState>> {
+        return object :
+            DatabaseBoundResource<List<ArticleDb>, HeadlinesViewState>() {
+            override suspend fun dbOperation() {
+                var resetArticles = articles.map { article -> article.copy(isFavorite = false) }
+                val favArticles = articlesDao.getAllArticles()
+                if (!favArticles.isNullOrEmpty()) {
+                    val favArticle = favArticles.map { convertArticleDBtoUI(it) }
+                    val commonArticles = favArticle.intersect(resetArticles)
+                    if (!commonArticles.isNullOrEmpty()) {
+                        commonArticles.forEach { commonArticle ->
+                            resetArticles =
+                                ArrayList(resetArticles.toList().findCommonAndReplace(commonArticle))
+                        }
+                    }
+                }
+                withContext(Dispatchers.Main) {
+                    onCompleteJob(
+                        DataState.data(
+                            HeadlinesViewState(
+                                HeadlinesViewState.HeadlineFields(
+                                    headlinesList = resetArticles
+                                )
+                            )
+                        )
+                    )
+                }
+            }
+
+            override fun setJob(job: Job) = addJob("checkFavorite", job)
+
+        }.asLiveData()
+    }
+
 }

@@ -16,6 +16,8 @@ sealed class HeadlinesStateEvent {
         val article: Article
     ) : HeadlinesStateEvent()
 
+    class HeadlinesCheckFavEvent(val articles:List<Article>):HeadlinesStateEvent()
+
     class HeadlinesRemoveFromFavEvent(
         val article: Article
     ) : HeadlinesStateEvent()

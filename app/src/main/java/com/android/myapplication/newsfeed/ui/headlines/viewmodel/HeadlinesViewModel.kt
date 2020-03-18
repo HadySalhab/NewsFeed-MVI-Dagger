@@ -55,6 +55,9 @@ constructor(
         is HeadlinesStateEvent.HeadlinesRemoveFromFavEvent -> {
             headlinesRepository.deleteArticleFromDB(stateEvent.article)
         }
+        is HeadlinesStateEvent.HeadlinesCheckFavEvent->{
+            headlinesRepository.checkFavorite(stateEvent.articles)
+        }
     }
 
     fun cancelActiveJobs() {

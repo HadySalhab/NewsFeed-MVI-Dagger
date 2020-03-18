@@ -28,7 +28,7 @@ import com.android.myapplication.newsfeed.ui.headlines.viewmodel.*
 import com.android.myapplication.newsfeed.util.AUSTRALIA
 import com.android.myapplication.newsfeed.util.TAG
 import com.android.myapplication.newsfeed.util.USA
-import com.android.myapplication.newsfeed.util.replaceArticleAndReturn
+import com.android.myapplication.newsfeed.util.findCommonAndReplace
 import com.android.myapplication.newsfeed.viewmodels.ViewModelProviderFactory
 import com.bumptech.glide.RequestManager
 import com.google.android.material.chip.Chip
@@ -100,14 +100,17 @@ class HeadlineFragment : BaseFragment(), HeadlinesListAdapter.Interaction,SwipeR
     // NOTE: even though the DataState member variables are wrapped in event,
     // it will be refreshed because its event object are being updated, in the networkBoundResources and repositories every time we fire this request
     private fun executeRequest() = viewModel.executeQueryEvent.observe(viewLifecycleOwner, Observer { queryEvent->
-                queryEvent.getContentIfNotHandled()?.let { //only proceed if this query has never been handled
+               if( queryEvent.getContentIfNotHandled()!=null) { //only proceed if this query has never been handled
                     Log.d(TAG, "HeadlineFragment: executeQueryEvent: $queryEvent")
                     with(viewModel) {
                         with(getVSHeadlines()) {
                             loadFirstPage(country, category)
                         }
                     }
-                }
+                }else{
+                   Log.d(TAG, "executeRequest: check favorites")
+                   viewModel.setStateEvent(HeadlinesStateEvent.HeadlinesCheckFavEvent(viewModel.getVSHeadlines().headlinesList))
+               }
             })
 
 
@@ -133,6 +136,9 @@ class HeadlineFragment : BaseFragment(), HeadlinesListAdapter.Interaction,SwipeR
                 Log.d(TAG, "HeadlineFragment: viewState observer: ${viewModelViewState}")
                 viewModelViewState?.let {
                     with(it.headlinesFields){
+                        headlinesList.forEach { item->
+                            Log.d(TAG, "subscribeObservers: newItem:${item.title} ..... ${item.isFavorite}")
+                        }
                         headlinesAdapter.submitList(
                             list = headlinesList, //could be empty or not
                             isQueryExhausted = isQueryExhausted
@@ -168,6 +174,9 @@ class HeadlineFragment : BaseFragment(), HeadlinesListAdapter.Interaction,SwipeR
                     Log.d(TAG, "HeadlineFragment: dataStateReturned: with data!=null, updating headlinesList")
                     //we are updating a field in the viewState, which will update the viewState itself
                     // and fire observers
+                    networkViewState.headlinesFields.headlinesList.forEach { item->
+                        Log.d(TAG, "blabla: ${item.title} and ${item.isFavorite}")
+                    }
                     viewModel.handlePaginationSuccessResult(networkViewState)
                 }
             }
@@ -247,9 +256,8 @@ class HeadlineFragment : BaseFragment(), HeadlinesListAdapter.Interaction,SwipeR
 
     override fun onFavIconClicked(isFavorite: Boolean, item: Article) {
         viewModel.updateViewState { headlineFields ->
-            Log.d(TAG, "onFavIconClicked: ${item.isFavorite}")
-            Log.d(TAG, "onFavIconClicked: ${headlineFields.headlinesList.replaceArticleAndReturn(item).map { it.isFavorite }}")
-            headlineFields.headlinesList = headlineFields.headlinesList.replaceArticleAndReturn(item)
+            val favArticle = item.copy(isFavorite = true)
+            headlineFields.headlinesList = headlineFields.headlinesList.findCommonAndReplace(favArticle)
         }
         if(isFavorite) {
             viewModel.setStateEvent(HeadlinesStateEvent.HeadlinesAddToFavEvent(item))
