@@ -25,10 +25,7 @@ import com.android.myapplication.newsfeed.ui.DataState
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesStateEvent
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesViewState
 import com.android.myapplication.newsfeed.ui.headlines.viewmodel.*
-import com.android.myapplication.newsfeed.util.AUSTRALIA
-import com.android.myapplication.newsfeed.util.TAG
-import com.android.myapplication.newsfeed.util.USA
-import com.android.myapplication.newsfeed.util.findCommonAndReplace
+import com.android.myapplication.newsfeed.util.*
 import com.android.myapplication.newsfeed.viewmodels.ViewModelProviderFactory
 import com.bumptech.glide.RequestManager
 import com.google.android.material.chip.Chip
@@ -141,17 +138,21 @@ class HeadlineFragment : BaseFragment(), HeadlinesListAdapter.Interaction,SwipeR
 
                         headlinesAdapter.submitList(
                             list = headlinesList, //could be empty or not
-                            isQueryExhausted = isQueryExhausted
+                            isQueryExhausted = isQueryExhausted,
+                            page = page
                         )
                         //only show error screen if the list is empty and the error message is not empty
                         //because if the user retrieved the list successfully, turns the wifi off and then pull to refresh, we dont want to show the error screen on top of the list
                         if(headlinesList.isNullOrEmpty() && !errorScreenMsg.isEmpty()){
+                            Log.d(TAG, "subscribeObservers: ${errorScreenMsg}")
+                            recyclerView!!.visibility  = View.GONE
                             tv_error!!.apply {
                                 visibility = View.VISIBLE
-                                text = errorScreenMsg
+                                setText( errorScreenMsg)
                             }
                         }else{
                             tv_error!!.visibility = View.GONE
+                            recyclerView!!.visibility  = View.VISIBLE
                         }
                     }
                 }
@@ -203,6 +204,11 @@ class HeadlineFragment : BaseFragment(), HeadlinesListAdapter.Interaction,SwipeR
                     val lastPosition = layoutManager.findLastVisibleItemPosition()
                     if (lastPosition == headlinesAdapter.itemCount.minus(1)) {
                         Log.d(TAG, "HeadlineFragment: load next page...")
+                        if(requireActivity().application.isNetworkAvailable() && viewModel.getVSHeadlines().page >1 && viewModel.getVSHeadlines().errorScreenMsg.isNotEmpty()){
+                            viewModel.updateViewState {headlineFields ->
+                                headlineFields.errorScreenMsg = ""
+                            }
+                        }
                         viewModel.loadNextPage()
                     }
                 }

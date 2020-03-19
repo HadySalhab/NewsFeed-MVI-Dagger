@@ -18,6 +18,8 @@ class HeadlinesListAdapter(
     private val requestManager: RequestManager
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    //identifier of no  result article
+    private val NO_RESULTS = -2
     //identifier of no more result article
     private val NO_MORE_RESULTS = -1
     //Identifier of a default article
@@ -25,6 +27,9 @@ class HeadlinesListAdapter(
     //article Item with id = -1
     private val NO_MORE_RESULTS_HEADLINE_MARKER = Article(
         title = "com.android.myapplication.newsfeed.NO_MORE_RESULT"
+    )
+    private val NO_RESULTS_HEADLINE_MARKER = Article(
+        title = "com.android.myapplication.newsfeed.NO_RESULT"
     )
     val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Article>() {
 
@@ -71,6 +76,13 @@ class HeadlinesListAdapter(
                         false
                     )
                 )
+            NO_RESULTS -> GenericViewHolder(
+                LayoutInflater.from(parent.context).inflate(
+                    R.layout.layout_empty_results,
+                    parent,
+                    false
+                )
+            )
 
             HEADLINE_ITEM-> HeadlinesViewHolder(
                     LayoutInflater.from(parent.context).inflate(
@@ -109,15 +121,19 @@ class HeadlinesListAdapter(
 
     //if the id of the last article is greater than -1, means its a normal article
     //otherwise its a no more result article
-    override fun getItemViewType(position: Int) = if(differ.currentList[position].title != "com.android.myapplication.newsfeed.NO_MORE_RESULT" ){
-           HEADLINE_ITEM
-        } else {
-       NO_MORE_RESULTS
+    override fun getItemViewType(position: Int) = if(differ.currentList[position].title == "com.android.myapplication.newsfeed.NO_MORE_RESULT" ){
+            NO_MORE_RESULTS
+        }else if (differ.currentList[position].title == "com.android.myapplication.newsfeed.NO_RESULT"){
+        NO_RESULTS
+    } else {
+        HEADLINE_ITEM
     }
 
-    fun submitList(list: List<Article>?, isQueryExhausted:Boolean) {
+    fun submitList(list: List<Article>?, isQueryExhausted:Boolean,page:Int) {
         val newList = list?.toMutableList()
-        if(isQueryExhausted){
+        if(isQueryExhausted && page == 1){
+            newList?.add(NO_RESULTS_HEADLINE_MARKER)
+        }else if(isQueryExhausted){
             //if the query is exhausted , append to the list the no more result article (id = -1 )
             newList?.add(NO_MORE_RESULTS_HEADLINE_MARKER)
         }

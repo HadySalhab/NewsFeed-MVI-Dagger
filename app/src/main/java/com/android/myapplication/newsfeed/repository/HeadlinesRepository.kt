@@ -38,7 +38,7 @@ constructor(
         page: Int
     ): LiveData<DataState<HeadlinesViewState>> {
         return object :
-            NetworkBoundResource<HeadlinesResponse, List<ArticleDb>, HeadlinesViewState>(
+            NetworkBoundResource<HeadlinesResponse, List<ArticleDb>, HeadlinesViewState>(page,
                 app.isNetworkAvailable()
             ) {
             override fun setJob(job: Job) = addJob("getTopHeadlines", job)

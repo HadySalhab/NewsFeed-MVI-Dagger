@@ -13,7 +13,7 @@ import kotlinx.coroutines.*
 //responseObject: network response
 //viewState
 abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
-    (
+    (page:Int=1,
     isNetworkAvailable: Boolean // is their a network connection?
 ):BoundResource<ViewStateType> (){
 
@@ -23,7 +23,13 @@ abstract class NetworkBoundResource<ResponseObject, CacheObject, ViewStateType>
       if (isNetworkAvailable) {
           doNetworkRequest()
       } else {
-          onCompleteJob(DataState.error(Response.dialogResponse(UNABLE_TODO_OPERATION_WO_INTERNET)))
+          if(page>1){
+              onCompleteJob(DataState.error(Response.dialogResponse(
+                  UNABLE_TO_LOAD_MORE_PAGE_WO_INTERNET)))
+          }else{
+              onCompleteJob(DataState.error(Response.dialogResponse(UNABLE_TODO_OPERATION_WO_INTERNET)))
+          }
+
       }
   }
 

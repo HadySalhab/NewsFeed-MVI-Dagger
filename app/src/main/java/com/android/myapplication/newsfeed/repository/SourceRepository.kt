@@ -29,7 +29,7 @@ constructor(
     fun getSources(): LiveData<DataState<SourcesViewState>> {
         Log.d(TAG, "SourceRepository: getSources() is called ")
         return object : NetworkBoundResource<SourcesResponse, Void, SourcesViewState>(
-            app.isNetworkAvailable()
+           isNetworkAvailable =  app.isNetworkAvailable()
         ) {
             override fun setJob(job: Job) = addJob("getSources", job)
 

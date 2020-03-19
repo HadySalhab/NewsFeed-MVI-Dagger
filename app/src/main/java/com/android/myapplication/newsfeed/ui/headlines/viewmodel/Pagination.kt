@@ -31,7 +31,7 @@ fun HeadlinesViewModel.loadFirstPage(country: String=EMPTY_STRING, category: Str
 //country & category are already known
 fun HeadlinesViewModel.loadNextPage() {
     // we should not get the next page when the query is exhausted or when the query is still in progress
-    if (!getVSHeadlines().isQueryExhausted && !getVSHeadlines().isQueryInProgress) {
+    if (!getVSHeadlines().isQueryExhausted && !getVSHeadlines().isQueryInProgress && getVSHeadlines().errorScreenMsg.isEmpty()) {
         updateViewState { headlinesFields->
             with(headlinesFields){
                 page++
@@ -59,6 +59,7 @@ fun HeadlinesViewModel.handlePaginationSuccessResult(networkVS: HeadlinesViewSta
     updateViewState { headlinesFields->
         with(headlinesFields){
             isQueryExhausted = networkHeadlineFields.isQueryExhausted
+            errorScreenMsg =  ""
             Log.d(TAG, "handlePaginationSuccessResult: ${isQueryExhausted}")
             if(page==1){
                 headlinesList = networkHeadlineFields.headlinesList

@@ -11,7 +11,6 @@ data class HeadlinesViewState(
         var headlinesList: List<Article> = ArrayList<Article>(),
         var errorScreenMsg: String = "",
         var isQueryExhausted:Boolean = false,  //true when no more result from the api , false by default
-
         //country and category are needed to update the overflow menu items from shared preferences
         //and needed to query the next page for pagination
         //these fields are updated from the UI layer
