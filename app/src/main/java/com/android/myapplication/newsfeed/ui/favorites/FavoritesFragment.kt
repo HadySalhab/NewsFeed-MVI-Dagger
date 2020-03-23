@@ -112,6 +112,16 @@ class FavoritesFragment : BaseFragment(), FavoritesListAdapter.Interaction {
     override fun onFavIconClicked(isFavorite: Boolean, item: Article) =
         viewModel.setStateEvent(FavoritesStateEvent.DeleteFromFavEvent(item))
 
+    override fun onShareIconClick(item: Article) {
+        val sendIntent = Intent().apply{
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, item.url)
+            type = "text/plain"
+        }
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
+    }
+
     private fun fireIntent(item: Article) {
 
 

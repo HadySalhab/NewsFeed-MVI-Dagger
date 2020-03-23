@@ -131,6 +131,17 @@ class ArticlesSourceFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListe
         }
 
     }
+
+    override fun onShareIconClick(item: Article) {
+        val sendIntent = Intent().apply{
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, item.url)
+            type = "text/plain"
+        }
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
+    }
+
     private fun fireIntent(item: Article) = with(Intent(Intent.ACTION_VIEW)){
         data = Uri.parse(item.url)
         startActivity(this)

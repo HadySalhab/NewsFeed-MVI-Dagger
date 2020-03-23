@@ -153,6 +153,9 @@ class HeadlinesListAdapter(
                 Log.d(TAG, "HeadlinesViewHolder itemView clicked...")
                 interaction?.onItemSelected(adapterPosition, item)
             }
+            iv_share_image.setOnClickListener {
+                interaction?.onShareIconClick(item)
+            }
             cb_favorite_image.apply {
                 setOnClickListener {
                     interaction?.onFavIconClicked(isChecked,item)
@@ -177,5 +180,6 @@ class HeadlinesListAdapter(
     interface Interaction {
         fun onItemSelected(position: Int, item: Article)
         fun onFavIconClicked(isFavorite:Boolean,item:Article)
+        fun onShareIconClick(item:Article)
     }
 }
