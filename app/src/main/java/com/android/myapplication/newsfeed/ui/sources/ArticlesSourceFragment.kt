@@ -51,13 +51,14 @@ class ArticlesSourceFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListe
         super.onCreateView(inflater, container, savedInstanceState)
         setHasOptionsMenu(true)
         val view =inflater.inflate(R.layout.fragment_articles_sources,container,false)
-        tv_error = view.findViewById(R.id.tv_error)
+        tv_error = view.findViewById(R.id.tv_article_source_error)
         recyclerView = view.findViewById(R.id.rv_headlines)
         swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh).apply {
             setOnRefreshListener(this@ArticlesSourceFragment)
         }
-        initRV()
 
+        initRV()
+        Log.d(TAG, "ARTICLE SOURCE FRAGMENT onCreateView: ")
 
         return view
     }
@@ -67,6 +68,7 @@ class ArticlesSourceFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListe
         viewModel = activity?.run {
             ViewModelProvider(this,providerFactory).get(SourcesViewModel::class.java)
         }?:throw Exception ("Invalid Activity")
+        Log.d(TAG, "ARTICLE SOURCE FRAGMENT onViewCreated: ")
         cancelActiveJobs()
         subscribeObservers()
         executeRequest()
@@ -145,7 +147,6 @@ class ArticlesSourceFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListe
             Log.d(TAG, "HeadlineFragment: viewState observer: ${viewModelViewState}")
             viewModelViewState?.let {
                 with(it.articlesSourceField){
-
                     sourceArticlesAdapter.submitList(
                         list = articleList,
                         isQueryExhausted = isQueryExhausted,
@@ -166,8 +167,8 @@ class ArticlesSourceFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListe
         })
     }
     private fun handlePagination(dataState: DataState<SourcesViewState>){
-        viewModel.updateArticleSourceViewState { headlinesFields->
-            headlinesFields.isQueryInProgress = dataState.loading.isLoading
+        viewModel.updateArticleSourceViewState { sourceArticlesFields->
+            sourceArticlesFields.isQueryInProgress = dataState.loading.isLoading
         }
 
         dataState.data?.let {
@@ -185,18 +186,22 @@ class ArticlesSourceFragment : BaseFragment(), SwipeRefreshLayout.OnRefreshListe
             }
         }
     }
-    private fun executeRequest() = viewModel.sourceArticlesEvent.observe(viewLifecycleOwner, Observer { queryEvent->
-        if( queryEvent.getContentIfNotHandled()!=null) { //only proceed if this query has never been handled
+    private fun executeRequest() =     viewModel.sourceArticlesEvent.observe(viewLifecycleOwner, Observer { event->
+        if(event) { //only proceed if this query has never been handled
             with(viewModel) {
                 with(getVSArticlesSources()) {
-                    Log.d(TAG, "executeRequest: $sourceId")
                     loadFirstPage(sourceId)
                 }
             }
+            viewModel.updateSourceArticlesEvent(false)
         }else{
             if(!viewModel.getVSArticlesSources().articleList.isNullOrEmpty()) {
                 viewModel.setStateEvent(SourcesStateEvent.SourceArticlesCheckFavEvent(viewModel.getVSArticlesSources().articleList,viewModel.getVSArticlesSources().isQueryExhausted))
             }
         }
     })
+
+
+
+
 }

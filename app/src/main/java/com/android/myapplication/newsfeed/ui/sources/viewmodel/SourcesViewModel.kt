@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.android.myapplication.newsfeed.repository.SourceRepository
 import com.android.myapplication.newsfeed.ui.BaseViewModel
 import com.android.myapplication.newsfeed.ui.DataState
-import com.android.myapplication.newsfeed.ui.Event
 import com.android.myapplication.newsfeed.ui.sources.state.SourcesStateEvent
 import com.android.myapplication.newsfeed.ui.sources.state.SourcesViewState
 import javax.inject.Inject
@@ -16,9 +15,13 @@ constructor(
     private val sourcesRepository:SourceRepository
 ) : BaseViewModel<SourcesStateEvent,SourcesViewState>() {
 
-    private val _sourceArticlesEvent = MutableLiveData<Event<Boolean>>(Event(true)) //this event will set to true when this viewModel is first created
-    val sourceArticlesEvent: LiveData<Event<Boolean>>
+    private val _sourceArticlesEvent = MutableLiveData<Boolean>(true) //this event will set to true when this viewModel is first created
+    val sourceArticlesEvent: LiveData<Boolean>
         get() = _sourceArticlesEvent
+
+    public fun updateSourceArticlesEvent(boolean: Boolean){
+        _sourceArticlesEvent.value = boolean
+    }
 
     override fun handleStateEvent(stateEvent: SourcesStateEvent)=  when (stateEvent) {
         is SourcesStateEvent.SourcesSearchEvent -> {

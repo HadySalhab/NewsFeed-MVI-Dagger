@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.myapplication.newsfeed.R
+import com.android.myapplication.newsfeed.models.Article
 import com.android.myapplication.newsfeed.models.Source
 import com.android.myapplication.newsfeed.ui.sources.viewmodel.SourcesViewModel
 import com.android.myapplication.newsfeed.util.TAG
@@ -42,9 +43,18 @@ abstract class BaseCategoriesFragment : DaggerFragment(),SourceListAdapter.Inter
     override fun onItemSelected(position: Int, item: Source) {
         Log.d(TAG, "GeneralFragment: source list item selected: ${item} ")
         viewModel.updateArticleSourceViewState { articlesSourceField ->
-            articlesSourceField.sourceId  = item.id
-            articlesSourceField.sourceName = item.name
+            //reset
+            with(articlesSourceField){
+                articleList = ArrayList<Article>()
+                errorScreenMsg = ""
+                isQueryExhausted = false
+                sourceId = item.id ?: ""
+                sourceName = item.name ?: ""
+                page = 1
+                isQueryInProgress = false
+            }
         }
+        viewModel.updateSourceArticlesEvent(true)
         findNavController().navigate(R.id.action_sourcesFragment_to_articlesSourceFragment)
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
