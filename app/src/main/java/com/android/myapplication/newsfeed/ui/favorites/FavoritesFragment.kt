@@ -1,5 +1,7 @@
 package com.android.myapplication.newsfeed.ui.favorites
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -104,10 +106,20 @@ class FavoritesFragment : BaseFragment(), FavoritesListAdapter.Interaction {
     }
 
     override fun onItemSelected(position: Int, item: Article) {
-
+        fireIntent(item)
     }
 
-    override fun onFavIconClicked(isFavorite: Boolean, item: Article)  = viewModel.setStateEvent(FavoritesStateEvent.DeleteFromFavEvent(item))
+    override fun onFavIconClicked(isFavorite: Boolean, item: Article) =
+        viewModel.setStateEvent(FavoritesStateEvent.DeleteFromFavEvent(item))
+
+    private fun fireIntent(item: Article) {
 
 
+        with(Intent(Intent.ACTION_VIEW)) {
+            data = Uri.parse(item.url)
+            startActivity(this)
+        }
+
+    }
 }
+
