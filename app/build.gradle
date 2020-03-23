@@ -122,10 +122,6 @@ dependencies {
     def matieral_dialogs_version = "3.1.0"
     implementation "com.afollestad.material-dialogs:core:$matieral_dialogs_version"
 
-    // Leak Canary
-    def leak_canary_version = "2.0-alpha-3"
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leak_canary_version"
-
     // Card View
     def cardview_version = "1.0.0"
     implementation "androidx.cardview:cardview:$cardview_version"

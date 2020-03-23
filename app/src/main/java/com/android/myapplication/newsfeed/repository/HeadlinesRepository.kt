@@ -29,7 +29,6 @@ constructor(
     val articlesDao: ArticlesDao,
     val app: Application
 ) : JobManager("HeadlinesRepository") {
-    private val TAG: String = "AppDebug"
 
     fun getTopHeadlines(
         country: String,

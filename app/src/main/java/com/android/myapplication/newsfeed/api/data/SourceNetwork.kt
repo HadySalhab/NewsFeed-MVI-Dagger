@@ -4,17 +4,17 @@ import com.google.gson.annotations.SerializedName
 
 data class SourceNetwork(
     @SerializedName("id")
-    var id:String?=null,
+    var id:String,
     @SerializedName("name")
-    var name:String?=null,
+    var name:String,
     @SerializedName("description")
-    var description:String?=null,
+    var description:String,
     @SerializedName("url")
-    var url:String?=null,
+    var url:String,
     @SerializedName("country")
-    var country:String?=null,
+    var country:String,
     @SerializedName("language")
-    var language:String?=null,
+    var language:String,
     @SerializedName("category")
-    var category: String?=null
+    var category: String
 )

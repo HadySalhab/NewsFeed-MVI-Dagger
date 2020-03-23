@@ -5,9 +5,9 @@ import androidx.room.Ignore
 
 data class Source(
     @ColumnInfo(name="source_id")
-    var id:String?=null,
+    var id:String="",
     @ColumnInfo(name = "source_name")
-    var name:String?=null,
+    var name:String="",
     @Ignore
     var description:String?=null,
     @Ignore

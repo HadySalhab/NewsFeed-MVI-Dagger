@@ -11,11 +11,11 @@ import androidx.viewpager2.widget.ViewPager2
 import com.android.myapplication.newsfeed.R
 import com.android.myapplication.newsfeed.ui.BaseFragment
 import com.android.myapplication.newsfeed.ui.sources.state.SourcesStateEvent
+import com.android.myapplication.newsfeed.ui.sources.viewmodel.SourcesViewModel
 import com.android.myapplication.newsfeed.util.TAG
 import com.android.myapplication.newsfeed.viewmodels.ViewModelProviderFactory
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import java.lang.Exception
 import javax.inject.Inject
 
 class SourcesFragment : BaseFragment() {
@@ -106,18 +106,7 @@ class SourcesFragment : BaseFragment() {
         }
         (tabLayoutMediator)!!.attach()
     }
-    /*   private fun getTabIcon(position: Int): Int {
-           return when (position) {
-               GENERAL_SOURCE_PAGE_INDEX -> R.drawable.garden_tab_selector
-               BUSINESS_SOURCE_PAGE_INDEX -> R.drawable.plant_list_tab_selector
-               ENTERTAINMENT_SOURCE_PAGE_INDEX -> R.drawable.garden_tab_selector
-               HEALTH_SOURCE_PAGE_INDEX -> R.drawable.plant_list_tab_selector
-               SCIENCE_SOURCE_PAGE_INDEX -> R.drawable.garden_tab_selector
-               SPORTS_SOURCE_PAGE_INDEX -> R.drawable.plant_list_tab_selector
-               TECHNOLOGY_SOURCE_PAGE_INDEX -> R.drawable.garden_tab_selector
-               else -> throw IndexOutOfBoundsException()
-           }
-       }*/
+
 
     private fun getTabTitle(position: Int): String? {
         return when (position) {

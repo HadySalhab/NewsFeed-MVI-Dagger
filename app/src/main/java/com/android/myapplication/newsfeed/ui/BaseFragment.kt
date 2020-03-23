@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
-import com.android.myapplication.newsfeed.ui.DataStateChangeListener
+import com.android.myapplication.newsfeed.R
 import com.android.myapplication.newsfeed.util.TAG
 import dagger.android.support.DaggerFragment
 
@@ -20,11 +20,18 @@ abstract class BaseFragment : DaggerFragment() {
    }
     protected abstract fun getFragmentId():Int
 
-    fun setupActionBarWithNavController(fragmentId: Int, activity: AppCompatActivity) =NavigationUI.setupActionBarWithNavController(
-           activity,
-           findNavController(),
-           AppBarConfiguration(setOf(fragmentId))
-       )
+    fun setupActionBarWithNavController(fragmentId: Int, activity: AppCompatActivity) {
+        val sets = mutableSetOf<Int>()
+        if(fragmentId != R.id.articlesSourceFragment){
+            sets.add(fragmentId)
+        }
+        NavigationUI.setupActionBarWithNavController(
+            activity,
+            findNavController(),
+            AppBarConfiguration(sets)
+
+    )
+    }
 
     abstract fun cancelActiveJobs()
     //getting the activity

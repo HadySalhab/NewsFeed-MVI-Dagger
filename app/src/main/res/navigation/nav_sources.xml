@@ -18,7 +18,7 @@
     <fragment
         android:id="@+id/articlesSourceFragment"
         android:name="com.android.myapplication.newsfeed.ui.sources.ArticlesSourceFragment"
-        android:label="@string/articles_source_label" >
+       >
         <action
             android:id="@+id/action_articlesSourceFragment_to_sourcesFragment"
             app:destination="@id/sourcesFragment"

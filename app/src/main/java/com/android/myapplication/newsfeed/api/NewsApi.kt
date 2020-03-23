@@ -17,6 +17,12 @@ interface NewsApi {
         @Query("q") searchQuery:String ="",
         @Query("apiKey") apiKey: String = BuildConfig.API_KEY
     ): LiveData<GenericApiResponse<HeadlinesResponse>>
+    @GET("v2/top-headlines")
+    fun getTopHeadlinesBySource(
+        @Query("sources") sourcesId: String,
+        @Query("page") page: Int = 1,
+        @Query("apiKey") apiKey: String = BuildConfig.API_KEY
+    ): LiveData<GenericApiResponse<HeadlinesResponse>>
 
     @GET("v2/sources")
     fun getSources(
