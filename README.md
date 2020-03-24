@@ -4,8 +4,6 @@
 
 NewsFeed, provides live top and breaking headlines for a country, specific category in a country, single source, or multiple sources, by interacting to [News API](https://newsapi.org/)
 
- <p align="left"><img src="https://img.shields.io/badge/status-incomplete-orange.svg" /></p>
-
 ## Screenshots
 
 ![Headlines](https://user-images.githubusercontent.com/51857962/77375276-1e23cd80-6dc1-11ea-9e38-69da7f95a66e.png) ![headline_dialog](https://user-images.githubusercontent.com/51857962/77375281-211ebe00-6dc1-11ea-9e73-d1a97f362fda.png) ![Sources](https://user-images.githubusercontent.com/51857962/77375284-25e37200-6dc1-11ea-965c-1915ad1d78b4.png) ![source-articles](https://user-images.githubusercontent.com/51857962/77375290-2976f900-6dc1-11ea-8a05-4423bdb36a3b.png) ![favorites](https://user-images.githubusercontent.com/51857962/77375294-2bd95300-6dc1-11ea-8d97-0c081ed41224.png)
