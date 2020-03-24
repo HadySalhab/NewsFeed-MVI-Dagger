@@ -39,6 +39,15 @@
                 android:textColor="#000"
                 android:layout_marginTop="20dp"
                 />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/france_option"
+            android:text="@string/france"
+            android:textSize="16sp"
+            android:textColor="#000"
+            android:layout_marginTop="20dp"
+            />
 
         <RadioButton
                 android:layout_width="wrap_content"

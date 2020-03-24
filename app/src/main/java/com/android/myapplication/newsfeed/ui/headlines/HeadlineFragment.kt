@@ -322,7 +322,10 @@ class HeadlineFragment : BaseFragment(), HeadlinesListAdapter.Interaction,SwipeR
                     with(findViewById<RadioGroup>(R.id.country_options)){
                         if(selectedCountry.equals(AUSTRALIA)){
                             check(R.id.australia_option)
-                        }else{
+                        }else if (selectedCountry.equals(FRANCE)) {
+                            check(R.id.france_option)
+                        }else
+                        {
                             check(R.id.united_state_option)
                         }
                     }
@@ -330,10 +333,12 @@ class HeadlineFragment : BaseFragment(), HeadlinesListAdapter.Interaction,SwipeR
                         val newSelectedCountry = findViewById<RadioButton>(findViewById<RadioGroup>(R.id.country_options).checkedRadioButtonId)
                         var countryDefault = AUSTRALIA
                         if(newSelectedCountry.text.toString().equals(getString(R.string.united_states))){
-
                             countryDefault = USA
-
                         }
+                        if(newSelectedCountry.text.toString().equals(getString(R.string.france))){
+                            countryDefault = FRANCE
+                        }
+
                         Log.d(TAG, "openCountryOptions: countryDefault $countryDefault")
 
                         viewModel.updateViewState { field->
