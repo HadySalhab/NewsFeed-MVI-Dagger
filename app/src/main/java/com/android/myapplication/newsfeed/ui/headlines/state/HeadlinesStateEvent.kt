@@ -3,7 +3,7 @@ package com.android.myapplication.newsfeed.ui.headlines.state
 import com.android.myapplication.newsfeed.models.Article
 
 sealed class HeadlinesStateEvent {
-    class HeadlinesSearchEvent(
+   data class HeadlinesSearchEvent(
         val country: String,
         val category: String,
         val searchQuery: String,

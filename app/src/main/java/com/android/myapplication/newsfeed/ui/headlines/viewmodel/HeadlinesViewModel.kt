@@ -41,7 +41,6 @@ constructor(
                 })
             }
             is HeadlinesStateEvent.None -> {
-                Log.d(TAG, "handleStateEvent: None")
                  object: LiveData<DataState<HeadlinesViewState>>(){
                     override fun onActive() {
                         super.onActive()

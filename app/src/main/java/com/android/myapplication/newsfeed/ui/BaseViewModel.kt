@@ -1,11 +1,9 @@
 package com.android.myapplication.newsfeed.ui
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import com.android.myapplication.newsfeed.util.TAG
 
 
 abstract class BaseViewModel<StateEvent, ViewState> : ViewModel()
@@ -23,6 +21,9 @@ abstract class BaseViewModel<StateEvent, ViewState> : ViewModel()
     val viewState: LiveData<ViewState>
         get() = _viewState
 
+    val stateEvent: LiveData<StateEvent>
+        get() = _stateEvent
+
     val dataState: LiveData<DataState<ViewState>> = Transformations
         .switchMap(_stateEvent){stateEvent ->
             stateEvent?.let {
@@ -31,12 +32,12 @@ abstract class BaseViewModel<StateEvent, ViewState> : ViewModel()
         }
 
     fun setStateEvent(event: StateEvent){
-        Log.d(TAG, "setStateEvent: ")
         _stateEvent.value = event
     }
 
     //create newView state or get the existing one
     fun getCurrentViewStateOrNew() = viewState.value?.let{ it } ?: initNewViewState()
+
 
 
     fun setViewState(viewState:ViewState){

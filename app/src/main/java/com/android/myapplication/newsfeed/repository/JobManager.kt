@@ -1,7 +1,5 @@
 package com.android.myapplication.newsfeed.repository
 
-import android.util.Log
-import com.android.myapplication.newsfeed.util.TAG
 import kotlinx.coroutines.Job
 
 /*
@@ -33,7 +31,7 @@ open class JobManager(
     fun cancelActiveJobs(){
         for((methodName, job) in jobs){
             if(job.isActive){
-                Log.e(TAG, "$className: cancelling job in method: '$methodName'")
+
                 job.cancel()
             }
         }
