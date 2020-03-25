@@ -15,8 +15,8 @@ import com.android.myapplication.newsfeed.models.Article
 import com.android.myapplication.newsfeed.persistence.ArticleDb
 
 fun String.formatStringDate() = this.removeRange(this.indexOf("T") until this.length)
-fun SharedPreferences.getCountry() = getString(ARTICLE_COUNTRY_KEY, AUSTRALIA)!!
-fun SharedPreferences.getCategory() = getString(ARTICLE_CATEGORY_KEY, GENERAL)!!
+fun SharedPreferences.getCountry() = getString(ARTICLE_COUNTRY_KEY, AUSTRALIA)?: AUSTRALIA
+fun SharedPreferences.getCategory() = getString(ARTICLE_CATEGORY_KEY, GENERAL) ?: GENERAL
 fun SharedPreferences.getSourceID() = getString(ARTICLE_SOURCE_ID_KEY, GENERAL)!!
 fun SharedPreferences.Editor.saveCountryAndCategory(country: String, category: String) {
     putString(ARTICLE_COUNTRY_KEY, country)
