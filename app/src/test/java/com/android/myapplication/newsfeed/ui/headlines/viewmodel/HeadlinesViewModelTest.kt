@@ -2,11 +2,15 @@ package com.android.myapplication.newsfeed.ui.headlines.viewmodel
 
 import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.android.myapplication.newsfeed.models.Article
 import com.android.myapplication.newsfeed.repository.HeadlinesRepository
+import com.android.myapplication.newsfeed.ui.DataState
 import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesStateEvent
+import com.android.myapplication.newsfeed.ui.headlines.state.HeadlinesViewState
 import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.whenever
 import org.hamcrest.core.Is.`is`
 import org.hamcrest.core.IsInstanceOf.instanceOf
 import org.junit.Assert
@@ -40,6 +44,10 @@ class HeadlinesViewModelTest{
 
     @Mock
     private lateinit var headlinesStateEventObserver: Observer<HeadlinesStateEvent>
+
+    @Mock
+    private lateinit var headlinesDataStateObserver: Observer<DataState<HeadlinesViewState>>
+
     @Before
     fun setUp() {
         //`when`(sharedPreferences.edit()).thenReturn(sharePreferencesEditor)
@@ -47,6 +55,7 @@ class HeadlinesViewModelTest{
         SUT = HeadlinesViewModel(headlinesRepository,sharedPreferences,sharePreferencesEditor)
 
         SUT.stateEvent.observeForever(headlinesStateEventObserver)
+        SUT.dataState.observeForever(headlinesDataStateObserver)
     }
     @Test
     fun saveCategoryAndCountry_shouldSaveToSharedPreferences(){
@@ -118,6 +127,7 @@ class HeadlinesViewModelTest{
         Assert.assertThat(ac.getValue(),`is`(instanceOf(HeadlinesStateEvent.HeadlinesRemoveFromFavEvent::class.java)))
     }
 
+    //Handle State Event
     @Test
     fun handleStateEvent_HeadlinesSearchEvent_ShouldCallRepositoryGetTopHeadlines(){
         val stateEvent = HeadlinesStateEvent.HeadlinesSearchEvent(COUNTRY,CATEGORY,SEARCH_QUERY,PAGE)
@@ -125,6 +135,24 @@ class HeadlinesViewModelTest{
         SUT.handleStateEvent(stateEvent)
 
         verify(headlinesRepository).getTopHeadlines(eq(COUNTRY),eq(CATEGORY),eq(SEARCH_QUERY),eq(PAGE))
+    }
+
+    @Test
+    fun handleStateEvent_HeadlinesSearchEvent_returnCorrectValue(){
+        val fakeLiveData = object:LiveData<DataState<HeadlinesViewState>>(){
+            override fun onActive() {
+                super.onActive()
+                value = DataState.none()
+            }
+        }
+        whenever(headlinesRepository.getTopHeadlines(COUNTRY,CATEGORY,SEARCH_QUERY,PAGE)).thenReturn(fakeLiveData)
+        val stateEvent = HeadlinesStateEvent.HeadlinesSearchEvent(COUNTRY,CATEGORY,SEARCH_QUERY,PAGE)
+
+
+       val result =  SUT.handleStateEvent(stateEvent)
+
+
+        Assert.assertEquals(fakeLiveData,result)
     }
 
     @Test
@@ -136,16 +164,55 @@ class HeadlinesViewModelTest{
 
         verify(headlinesRepository).insertArticleToDB(eq(article))
     }
+
     @Test
-    fun handleStateEvent_HeadlinesRemoveFromFavEvent_shouldCallRepositorydeleteArticleFromDB(){
+    fun handleStateEvent_HeadlinesAddToFavEvent_ShouldReturnCorrectValue(){
+        val article = Article()
+        val fakeLiveData = object:LiveData<DataState<HeadlinesViewState>>(){
+            override fun onActive() {
+                super.onActive()
+                value = DataState.none()
+            }
+        }
+        whenever(headlinesRepository.insertArticleToDB(article)).thenReturn(fakeLiveData)
+        val stateEvent = HeadlinesStateEvent.HeadlinesAddToFavEvent(article)
+
+
+        val result =  SUT.handleStateEvent(stateEvent)
+
+
+        Assert.assertEquals(fakeLiveData,result)
+    }
+
+    @Test
+    fun handleStateEvent_HeadlinesRemoveFromFavEvent_shouldCallRepositoryDeleteArticleFromDB(){
         val article = Article()
 
         SUT.handleStateEvent(HeadlinesStateEvent.HeadlinesRemoveFromFavEvent(article))
 
-        verify(headlinesRepository).deleteArticleFromDB(article)
+        verify(headlinesRepository).deleteArticleFromDB(eq(article))
     }
     @Test
-    fun handleStateEvent_HeadlinesCheckFavEvent_shouldCallRepositorycheckFavorite(){
+    fun handleStateEvent_HeadlinesRemoveFromFavEvent_ShouldReturnCorrectValue(){
+        val article = Article()
+        val fakeLiveData = object:LiveData<DataState<HeadlinesViewState>>(){
+            override fun onActive() {
+                super.onActive()
+                value = DataState.none()
+            }
+        }
+        whenever(headlinesRepository.deleteArticleFromDB(article)).thenReturn(fakeLiveData)
+        val stateEvent = HeadlinesStateEvent.HeadlinesRemoveFromFavEvent(article)
+
+
+        val result =  SUT.handleStateEvent(stateEvent)
+
+
+        Assert.assertEquals(fakeLiveData,result)
+    }
+
+    @Test
+    fun handleStateEvent_HeadlinesCheckFavEvent_shouldCallRepositoryCheckFavorite(){
         val article = Article()
         val listOfArticles = listOf(article)
         val isQueryExhausted = false
@@ -155,6 +222,26 @@ class HeadlinesViewModelTest{
         verify(headlinesRepository).checkFavorite(eq(listOfArticles), eq(isQueryExhausted))
     }
 
+    @Test
+    fun handleStateEvent_HeadlinesCheckFavEvent_ShouldReturnCorrectValue(){
+        val article = Article()
+        val listOfArticles = listOf(article)
+        val isQueryExhausted = false
+        val fakeLiveData = object:LiveData<DataState<HeadlinesViewState>>(){
+            override fun onActive() {
+                super.onActive()
+                value = DataState.none()
+            }
+        }
+        whenever(headlinesRepository.checkFavorite(listOfArticles,isQueryExhausted)).thenReturn(fakeLiveData)
+        val stateEvent = HeadlinesStateEvent.HeadlinesCheckFavEvent(listOfArticles,isQueryExhausted)
+
+
+        val result =  SUT.handleStateEvent(stateEvent)
+
+
+        Assert.assertEquals(fakeLiveData,result)
+    }
 
     @Test
     fun cancelActiveJob_shouldSetStateEventToNone(){
@@ -165,6 +252,7 @@ class HeadlinesViewModelTest{
         verify(headlinesStateEventObserver).onChanged(ac.capture())
         Assert.assertThat(ac.getValue(),`is`(instanceOf(HeadlinesStateEvent.None::class.java)))
     }
+
 
 
 
