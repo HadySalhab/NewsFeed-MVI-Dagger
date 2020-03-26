@@ -33,7 +33,7 @@ constructor(
 
     override fun handleStateEvent(stateEvent: HeadlinesStateEvent) = when (stateEvent) {
             is HeadlinesStateEvent.HeadlinesSearchEvent -> {
-                Log.d(TAG, "handleStateEvent: $stateEvent")
+
                  with(stateEvent,{
                     headlinesRepository.getTopHeadlines(
                         country,category,searchQuery,page
@@ -55,7 +55,6 @@ constructor(
             headlinesRepository.deleteArticleFromDB(stateEvent.article)
         }
         is HeadlinesStateEvent.HeadlinesCheckFavEvent->{
-            Log.d(TAG, "handleStateEvent: ${stateEvent.isQueryExhausted}")
             headlinesRepository.checkFavorite(stateEvent.articles,stateEvent.isQueryExhausted)
         }
     }
